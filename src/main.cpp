@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Window");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Mystery Maze");
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
