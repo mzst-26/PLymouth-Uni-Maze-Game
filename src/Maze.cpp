@@ -1,14 +1,14 @@
 #include "../include/maze.h" //include the header file
 using namespace std;
 //first step is to initialise the maze and set up the headers for it in maze.h
-Maze::Maze(int width, int height, int cell_size int starting_point_X int starting_point_Y)
-    :maze_width{width}, maze_height{height}, cell_size{cell_size}, current_position{starting_point_X, starting_point_Y}, maze_grid{width, vector<Cell>height}{
+Maze::Maze(int width, int height, int cell_size, int starting_point_X, int starting_point_Y)
+    :maze_width{width}, maze_height{height}, cell_size{cell_size}, current_position{starting_point_X, starting_point_Y}, maze_grid(width, vector<Cell>(height)){
     //get the coordinates of the current cell
-    current_cell = maze_grid[current_position.x, current_position.y]
+    current_cell = &maze_grid[current_position.x][current_position.y];
     //define it as visited
-    current_cell->visited = true
+    current_cell->visited = true;
     //push the current position to the backtracking stack for when hitting a dead end
-    backtracking_stack.push(current_position)
+    backtracking_stack.push(current_position);
     }
 
 //second we find unvisited cells around the current cell
@@ -36,7 +36,7 @@ optional<sf::Vector2i> Maze::choose_next_cell() {
 }
 
 
-// step is to generate the maze
+// this step is to generate the maze
 void Maze::generate() {
     auto next_position = choose_next_cell();
     // If there are unvisited cells around the current cell, continue generating
@@ -57,12 +57,12 @@ void Maze::generate() {
             next_cell->right = false;
         }
         if (current_position.y < next.y) {
-            current_cell->botton = false;
+            current_cell->bottom = false;
             next_cell->top = false;
         }
         if (current_position.y > next.y) {
             current_cell->top = false;
-            next_cell->botton = false;
+            next_cell->bottom = false;
         }
 
         // update the current position/cell and set it to current position/cell is now next position/cell
@@ -83,6 +83,47 @@ void Maze::generate() {
 void Maze::update() {
     if (!is_generated) generate();
 }
+
+//last is to draw the maze using SFML
+void Maze::draw(sf::RenderWindow &window) {
+    for (int y = 0; y < maze_height; y++) {
+        for (int x = 0; x < maze_width; x++) {
+            // Get cell coordinates and cell data
+            int gx = x * cell_size;
+            int gy = y * cell_size;
+            //get the cell
+            Cell* cell = &maze_grid[x][y];
+
+            // Draw walls
+            if (cell->top) {
+                sf::RectangleShape line(sf::Vector2f(cell_size, 1));
+                line.setFillColor(sf::Color::White);
+                line.setPosition(gx, gy);
+                window.draw(line);
+            }
+            if (cell->bottom) {
+                sf::RectangleShape line(sf::Vector2f(cell_size, 1));
+                line.setFillColor(sf::Color::White);
+                line.setPosition(gx, gy + cell_size - 1);
+                window.draw(line);
+            }
+            if (cell->left) {
+                sf::RectangleShape line(sf::Vector2f(1, cell_size));
+                line.setFillColor(sf::Color::White);
+                line.setPosition(gx, gy);
+                window.draw(line);
+            }
+            if (cell->right) {
+                sf::RectangleShape line(sf::Vector2f(1, cell_size));
+                line.setFillColor(sf::Color::White);
+                line.setPosition(gx + cell_size - 1, gy);
+                window.draw(line);
+            }
+        }
+    }
+}
+
+
 
 
 

@@ -13,6 +13,9 @@ class Maze{
     public:
         //declare the type of Maze function and it's parameters 
         Maze(int width, int height, int cell_size, int starting_point_X, int starting_point_Y);
+        void update();
+
+        void draw(sf::RenderWindow &window);
     private:
         //define the type of Cell opject and it's properties with their default values
         struct Cell{
@@ -32,7 +35,7 @@ class Maze{
         Cell *current_cell{nullptr};
         stack<sf::Vector2i> backtracking_stack;
         void generate();
-        bool is_generated{false}
+        bool is_generated{false};
     optional<sf::Vector2i> choose_next_cell();
 };
 
