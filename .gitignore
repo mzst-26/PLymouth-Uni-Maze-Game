@@ -31,4 +31,7 @@
 *.out
 *.app
 /build/
-
+.vscode
+/.vscode/
+.vscode/c_cpp_properties.json
+.vscode/tasks.json
