@@ -1,5 +1,11 @@
+#ifndef INCLUDE_MAZE_H_ //Header guards prevent the multiple inclusion of a header file
+#define INCLUDE_MAZE_H_
+
 #include <stack> 
 #include <vector>
+#include <cstdlib>
+#include <iostream>
+#include <optional>
 #include <SFML/Graphics.hpp>
 using namespace std;
 
@@ -17,16 +23,18 @@ class Maze{
             bool right{true};      
             
         };
-        //define the type of other Maze variables and parameters 
+        
         int maze_width;
         int maze_height;
         int cell_size;
-        
-
-        //2D array type of the current position
         sf::Vector2i current_position{0, 0};
         vector<vector<Cell>> maze_grid;
         Cell *current_cell{nullptr};
         stack<sf::Vector2i> backtracking_stack;
-
+        void generate();
+        bool is_generated{false}
+    optional<sf::Vector2i> choose_next_cell();
 };
+
+
+#endif // INCLUDE_MAZE_H_
