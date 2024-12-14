@@ -27,7 +27,7 @@ void Player::move(sf::Vector2i direction, Maze &maze) {
         auto& currentCell = grid[position.x][position.y]; // Current cell
         auto& nextCell = grid[newPosition.x][newPosition.y]; // Next cell
 
-        // Print current cell properties for debugging
+    // for debugging
         // cout << "Current Cell: ("
         //      << position.x << ", " << position.y << ") - "
         //      << "Top: " << currentCell.top << ", "
@@ -36,22 +36,23 @@ void Player::move(sf::Vector2i direction, Maze &maze) {
         //      << "Right: " << currentCell.right << endl;
 
         // Check if the next cell is a wall
-        if (direction.x == -1 && currentCell.left == 1) {
-            // cout << "Wall on the left" << endl; for debugging
-            return; // Can't move left
-        }
-        if (direction.x == 1 && currentCell.right == 1) {
-            // cout << "Wall on the right" << endl;for debugging
-            return; // Can't move right
-        }
-        if (direction.y == -1 && currentCell.top == 1) {
-            // cout << "Wall on the top" << endl; for debugging
-            return; // Can't move up
-        }
-        if (direction.y == 1 && currentCell.bottom == 1) {
-            // cout << "Wall on the bottom" << endl; for debugging
-            return; // Can't move down
-        }
+        // if (direction.x == -1 && currentCell.left == 1) {
+        //     cout << "Wall on the left" << endl;
+        //     return; // Can't move left
+        // }
+        // if (direction.x == 1 && currentCell.right == 1) {
+        //     cout << "Wall on the right" << endl;
+        //     return; // Can't move right
+        // }
+        // if (direction.y == -1 && currentCell.top == 1) {
+        //     cout << "Wall on the top" << endl;
+        //     return; // Can't move up
+        // }
+        // if (direction.y == 1 && currentCell.bottom == 1) {
+        //     cout << "Wall on the bottom" << endl;
+        //     return; // Can't move down
+        // }
+    //Debug output
 
         // Move the player to the new position
         position = newPosition;
