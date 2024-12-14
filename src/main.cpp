@@ -22,9 +22,12 @@ int main() {
     Enemy enemy(30, sf::Vector2i(rand() % 24, rand() % 14));
 
     // Cooldown time in milliseconds
-    const int moveCooldown = 50; // 200 milliseconds
-    sf::Clock clock; // Clock to track time
-
+    const int PlayerMoveCooldown = 50; // 50 milliseconds
+    sf::Clock PlayerClock; // Clock to track time 
+    
+     const int EnemyMoveCooldown = 100; // 100 milliseconds
+     sf::Clock EnemyClock; // Clock to track time 
+    
     // Main game loop
     while (window.isOpen()) {
         sf::Event event;
@@ -35,7 +38,7 @@ int main() {
             // Check for key presses to move the player
             if (event.type == sf::Event::KeyPressed) {
                 // Check if enough time has passed since the last move
-                if (clock.getElapsedTime().asMilliseconds() >= moveCooldown) {
+                if (PlayerClock.getElapsedTime().asMilliseconds() >= PlayerMoveCooldown) {
                     if (event.key.code == sf::Keyboard::W) {
                         // std::cout << "Up key pressed" << std::endl; 
                         // Debug output
@@ -54,8 +57,8 @@ int main() {
                         // std::cout << "Right key pressed" << std::endl; // Debug output
                         player.move(sf::Vector2i(1, 0), maze); // Move right
                     }
-                    // Reset the clock after a move
-                    clock.restart();
+                    // Reset the PlayerClock after a move
+                    PlayerClock.restart();
                 }
             }
         }
@@ -73,7 +76,12 @@ int main() {
         if (maze.getIsGenerated()){
              player.draw(window); // Draw the player
              enemy.draw(window);
+             if (EnemyClock.getElapsedTime().asMilliseconds() >= EnemyMoveCooldown) {
              enemy.move(maze);
+             EnemyClock.restart();
+             }
+          
+
         }
    
         // Display the rendered frame
