@@ -7,7 +7,7 @@ using namespace std;
 Player::Player(int cell_size, sf::Vector2i start_position)
     : position(start_position) {
     shape.setSize(sf::Vector2f(cell_size, cell_size)); // Slightly smaller than the cell
-    shape.setFillColor(sf::Color::Red); // Color of the player
+    shape.setFillColor(sf::Color::Green); // Color of the player
     shape.setPosition(position.x * cell_size + 2.5f, position.y * cell_size + 2.5f); // Center the player in the cell
     shape.setScale(0.90, 0.90);
 }
@@ -35,24 +35,23 @@ void Player::move(sf::Vector2i direction, Maze &maze) {
         //      << "Left: " << currentCell.left << ", "
         //      << "Right: " << currentCell.right << endl;
 
-        // Check if the next cell is a wall
-        // if (direction.x == -1 && currentCell.left == 1) {
-        //     cout << "Wall on the left" << endl;
-        //     return; // Can't move left
-        // }
-        // if (direction.x == 1 && currentCell.right == 1) {
-        //     cout << "Wall on the right" << endl;
-        //     return; // Can't move right
-        // }
-        // if (direction.y == -1 && currentCell.top == 1) {
-        //     cout << "Wall on the top" << endl;
-        //     return; // Can't move up
-        // }
-        // if (direction.y == 1 && currentCell.bottom == 1) {
-        //     cout << "Wall on the bottom" << endl;
-        //     return; // Can't move down
-        // }
-    //Debug output
+        //Check if the next cell is a wall
+        if (direction.x == -1 && currentCell.left == 1) {
+            cout << "Wall on the left" << endl;
+            return; // Can't move left
+        }
+        if (direction.x == 1 && currentCell.right == 1) {
+            cout << "Wall on the right" << endl;
+            return; // Can't move right
+        }
+        if (direction.y == -1 && currentCell.top == 1) {
+            cout << "Wall on the top" << endl;
+            return; // Can't move up
+        }
+        if (direction.y == 1 && currentCell.bottom == 1) {
+            cout << "Wall on the bottom" << endl;
+            return; // Can't move down
+        }
 
         // Move the player to the new position
         position = newPosition;
