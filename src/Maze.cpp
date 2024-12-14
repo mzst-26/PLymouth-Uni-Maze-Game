@@ -1,23 +1,34 @@
-#include "../include/maze.h" //include the header file
-using namespace std;
-//first step is to initialise the maze and set up the headers for it in maze.h
-Maze::Maze(int width, int height, int cell_size, int starting_point_X, int starting_point_Y)
-    :maze_width{width}, maze_height{height}, cell_size{cell_size}, current_position{starting_point_X, starting_point_Y}, maze_grid(width, vector<Cell>(height)){
-    //get the coordinates of the current cell
-    current_cell = &maze_grid[current_position.x][current_position.y];
-    //define it as visited
-    current_cell->visited = true;
-    //push the current position to the backtracking stack for when hitting a dead end
-    backtracking_stack.push(current_position);
-    }
+#include "../include/maze.h" // Include the header file
+#include <cstdlib> // For rand()
+#include <optional> // For std::optional
+#include <vector> // For std::vector
+#include <stack> // For std::stack
 
-//second we find unvisited cells around the current cell
+using namespace std;
+
+// Constructor for the Maze class
+Maze::Maze(int width, int height, int cell_size, int starting_point_X, int starting_point_Y)
+    : maze_width{width}, maze_height{height}, cell_size{cell_size}, 
+      current_position{starting_point_X, starting_point_Y}, 
+      maze_grid(width, vector<Cell>(height)), 
+      is_generated{false} { // Initialize is_generated
+
+    srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
+    // Get the coordinates of the current cell
+    current_cell = &maze_grid[current_position.x][current_position.y];
+    // Define it as visited
+    current_cell->visited = true;
+    // Push the current position to the backtracking stack for when hitting a dead end
+    backtracking_stack.push(current_position);
+
+}
+
+
+// Function to choose the next cell to visit
 optional<sf::Vector2i> Maze::choose_next_cell() {
-    //An array that holds all valid possible next moves
     vector<sf::Vector2i> list_of_next_cells;
-    
-    // Add valid neighbors to the list
-    //checking for if the next_cell is going out of bound or not and if it is visited/ not visited
+
+    // Check for unvisited neighbors
     if (current_position.x > 0 && !maze_grid[current_position.x - 1][current_position.y].visited)
         list_of_next_cells.push_back({current_position.x - 1, current_position.y});
     if (current_position.x < maze_width - 1 && !maze_grid[current_position.x + 1][current_position.y].visited)
@@ -25,23 +36,33 @@ optional<sf::Vector2i> Maze::choose_next_cell() {
     if (current_position.y > 0 && !maze_grid[current_position.x][current_position.y - 1].visited)
         list_of_next_cells.push_back({current_position.x, current_position.y - 1});
     if (current_position.y < maze_height - 1 && !maze_grid[current_position.x][current_position.y + 1].visited)
-        list_of_next_cells.push_back({current_position.x, current_position.y + 1});
+        list_of_next_cells.push_back({current_position.x, current_position.y + 1 });
 
-    //chosing a random one unless the stack is empty(end of maze generation)
+    // Choose a random cell from the list
     if (!list_of_next_cells.empty()) {
         int index = rand() % list_of_next_cells.size();
         return list_of_next_cells[index];
     }
     return nullopt;
 }
+vector<vector<Maze::Cell>>& Maze::getMazeGrid() {
+    return maze_grid; // Return a reference to the maze grid
+}
+bool Maze::allCellsVisited() {
+    for (int x = 0; x < maze_width; ++x) {
+        for (int y = 0; y < maze_height; ++y) {
+            if (!maze_grid[x][y].visited) {
+                return false; // Found an unvisited cell
+            }
+        }
+    }
+    return true; // All cells are visited
+}
 
-
-// this step is to generate the maze
+// Function to generate the maze
 void Maze::generate() {
     auto next_position = choose_next_cell();
-    // If there are unvisited cells around the current cell, continue generating
     if (next_position) {
-
         // Move to the next cell
         sf::Vector2i next = *next_position;
         Cell* next_cell = &maze_grid[next.x][next.y];
@@ -65,33 +86,40 @@ void Maze::generate() {
             next_cell->bottom = false;
         }
 
-        // update the current position/cell and set it to current position/cell is now next position/cell
+        // Update the current position and cell
         current_position = next;
         current_cell = next_cell;
-        // push the current position to the backtracking stack for when hitting a dead end
         backtracking_stack.push(current_position);
-
     } else if (!backtracking_stack.empty()) {
         // Backtrack if no unvisited neighbors
         current_position = backtracking_stack.top();
         current_cell = &maze_grid[current_position.x][current_position.y];
         backtracking_stack.pop();
     }
+        // Check if the maze is fully generated
+    if (allCellsVisited()) {
+        is_generated = true; // Set the flag to true when generation is complete
+    }
 }
 
-//Check if the maze ic complete and generated if not continue
+// Function to update the maze generation
 void Maze::update() {
-    if (!is_generated) generate();
+    if (!is_generated) {
+        generate();
+    }
 }
 
-//last is to draw the maze using SFML
+// Function to check if the maze is generated
+bool Maze::getIsGenerated() {
+    return is_generated;
+}
+
+// Function to draw the maze using SFML
 void Maze::draw(sf::RenderWindow &window) {
     for (int y = 0; y < maze_height; y++) {
         for (int x = 0; x < maze_width; x++) {
-            // Get cell coordinates and cell data
             int gx = x * cell_size;
             int gy = y * cell_size;
-            //get the cell
             Cell* cell = &maze_grid[x][y];
 
             // Draw walls
@@ -121,10 +149,8 @@ void Maze::draw(sf::RenderWindow &window) {
             }
         }
     }
+
+    
 }
-
-
-
-
 
 
