@@ -1,13 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include "../include/maze.h"
 #include "../include/player.h"
+#include "../include/enemy.h"
 #include <iostream> // Include for std::cout
 #include <cstdlib>  // Include for rand()
 
 using namespace std;
 
 int main() {
-      srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
+    srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
     // Create a render window
     sf::RenderWindow window(sf::VideoMode(800, 600), "Mystery Maze");
 
@@ -16,6 +17,9 @@ int main() {
     
     // Create a Player object after maze generation
     Player player(30, sf::Vector2i(rand() % 24, rand() % 14));
+
+ // Create a Player object after maze generation
+    Enemy enemy(30, sf::Vector2i(rand() % 24, rand() % 14));
 
     // Cooldown time in milliseconds
     const int moveCooldown = 50; // 200 milliseconds
@@ -68,6 +72,8 @@ int main() {
         //check if the maze is fully generated
         if (maze.getIsGenerated()){
              player.draw(window); // Draw the player
+             enemy.draw(window);
+             enemy.move(maze);
         }
    
         // Display the rendered frame
