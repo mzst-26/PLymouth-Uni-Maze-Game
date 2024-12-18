@@ -10,7 +10,7 @@ using namespace std;
 Maze::Maze(int width, int height, int cell_size, int starting_point_X, int starting_point_Y)
     : maze_width{width}, maze_height{height}, cell_size{cell_size}, 
       current_position{starting_point_X, starting_point_Y}, 
-      maze_grid(width, vector<Cell>(height)), 
+      maze_grid(width, vector<Maze::Cell>(height)), 
       is_generated{false} { // Initialize is_generated
 
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
@@ -45,9 +45,10 @@ optional<sf::Vector2i> Maze::choose_next_cell() {
     }
     return nullopt;
 }
-vector<vector<Maze::Cell>>& Maze::getMazeGrid() {
-    return maze_grid; // Return a reference to the maze grid
+const std::vector<std::vector<Maze::Cell>>& Maze::getMazeGrid() const {
+    return maze_grid; // Assuming 'mazeGrid' is the member storing the grid
 }
+
 bool Maze::allCellsVisited() {
     for (int x = 0; x < maze_width; ++x) {
         for (int y = 0; y < maze_height; ++y) {

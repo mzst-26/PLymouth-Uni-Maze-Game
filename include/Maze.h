@@ -33,7 +33,7 @@ public:
         bool right{true};      
     };
 
-    vector<vector<Cell>>& getMazeGrid(); // Method to get the maze grid
+    const std::vector<std::vector<Cell>>& getMazeGrid() const; // Method to get the maze grid
 
 private:
     vector<vector<Cell>> maze_grid; // Declare maze_grid here

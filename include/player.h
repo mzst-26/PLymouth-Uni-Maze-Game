@@ -11,7 +11,9 @@ public:
     Player(int cell_size, sf::Vector2i start_position);
     void draw(sf::RenderWindow &window);
     void move(sf::Vector2i direction, Maze &maze);
-    sf::Vector2i getPosition() const { return position; }
+    sf::Vector2i getPosition() const { return position; };
+
+    sf::Vector2i GetPlayerPosition() const { return position; };
 
 private:
     sf::Vector2i position;
