@@ -2,16 +2,21 @@
 
 // Constructor
 Button::Button(sf::Vector2f position, const std::string& text) {
-    // Load textures for different status 
-    if (!texIdle.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/" + text + "Button.png") ||
-        !texHover.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/"+ text + "HOP.png") ||
-        !texPressed.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/"+ text +"HOP.png")) {
+    // Load textures for different status
+       std::string basePath = "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/";
+    if (!texIdle.loadFromFile(basePath + text + "Button.png") ||
+        !texHover.loadFromFile(basePath + text + "HOP.png") ||
+        !texPressed.loadFromFile(basePath + text + "HOP.png")) {
         std::cerr << "Error loading button textures!" << std::endl;
     }
-    //initialise the texture and position of the buttonn and etc
+    // Initialize the texture and position of the button
     buttonShape.setTexture(texIdle);
     buttonShape.setPosition(position);
-    buttonShape.setScale(0.2, 0.2);
+    if (text == "Easy" || text == "Medium" || text == "Hard"){
+          buttonShape.setScale(1, 1);
+    }else{
+        buttonShape.setScale(0.2f, 0.2f);
+    }
 
     //load the font and add error handeling
     try{
@@ -37,21 +42,39 @@ Button::Button(sf::Vector2f position, const std::string& text) {
 
     buttonState = IDLE; // Initial state
 }
+// bool Button::setHighlighted(bool active, std::string text) {
+//     if (active) {
+//        texIdle.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/" + text + "HOP.png");
+//     } else {
+//        texPressed.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/"+ text +"Button.png");
+//     }
+
+// }
 
 // Destructor
 Button::~Button() {}
 
 // Check if the button is pressed
-bool Button::isPressed() {
-    return buttonState == PRESSED;
+bool Button::isPressed(const sf::RenderWindow& window) const {
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window); // Get mouse position relative to the window
+    sf::FloatRect buttonBounds = buttonShape.getGlobalBounds(); // Get the button's bounding box
+    buttonState == PRESSED; 
+    return buttonBounds.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)); // Check if the mouse is inside the button
 }
 
 // Check if the button is hovered
 bool Button::isHovered() {
     return buttonState == HOVERED;
+
+}
+
+// Check if the button is hovered
+bool Button::isRest() {
+    return buttonState == IDLE;
 }
 
 // Update the button state based on mouse position
+// In Button::update()
 void Button::update(const sf::RenderWindow& window) {
     buttonState = IDLE; // Reset state
 
@@ -60,6 +83,7 @@ void Button::update(const sf::RenderWindow& window) {
     if (buttonShape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
         buttonState = HOVERED; // Mouse is over the button
 
+        // Check if the mouse button is pressed
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             buttonState = PRESSED; // Button is pressed
         }
@@ -83,4 +107,8 @@ void Button::update(const sf::RenderWindow& window) {
 void Button::render(sf::RenderTarget& target) {
     target.draw(buttonShape);
     target.draw(buttonText);
+}
+
+void Button::setScale(const sf::Vector2f& scale) {
+    buttonShape.setScale(scale); // Set the scale of the button's sprite
 }

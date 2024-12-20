@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../include/game.h" // Include the Game class header
 #include "../include/button.h" // Include the Button class header
+#include "../include/settingsPopup.h" 
 
 int main() {
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
@@ -36,6 +37,11 @@ int main() {
     sf::RectangleShape fadeRect(sf::Vector2f(1200, 800)); // Full window size
     fadeRect.setFillColor(sf::Color(0, 0, 0, 0)); // Start fully transparent
 
+ 
+     // Create settings popup instance
+    SettingsPopup settingsPopup(window);
+    bool showSettings = false; // Control visibility of settings popup
+
     // Main menu loop
     while (window.isOpen()) {
         sf::Event event;
@@ -48,28 +54,33 @@ int main() {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     std::cout << "Mouse clicked at: (" << event.mouseButton.x << ", " << event.mouseButton.y << ")\n";
              
-                    if (playButton.isPressed()) {
+                    if (playButton.isPressed(window)) {
                         std::cout << "Button clicked!\n"; // Debug output
                         loading = true; // Set loading state
                         loadingClock.restart(); // Restart the clock
                     }
-                    if (ResumeButton.isPressed()) {
+                    if (ResumeButton.isPressed(window)) {
                         std::cout << "Resume Button clicked!\n"; // Debug output
                         // TODO: Implement resume logic here
                     }
-                    if (SettingsButton.isPressed()) {
+                    if (SettingsButton.isPressed(window)) {
                         std::cout << "Settings Button CLicked!\n"; // Debug output
-                        // TODO: Implement resume logic here
+                        showSettings = !showSettings; // Toggle settings popup visibility
                     }
-                    if (QuitButton.isPressed()) {
+                    if (QuitButton.isPressed(window)) {
                         std::cout << "Quit Button CLicked!\n"; // Debug output
                         window.close();
                         window.close();
                     }
                 }
             }
+            // Handle settings input if the popup is shown
+            if (showSettings) {
+                settingsPopup.handleInput(event); // Process events for settings popup
+            }
         }
-        
+
+        // Update button states
         playButton.update(window); // Update the button state continuously
         ResumeButton.update(window); // Update the button state continuously
         SettingsButton.update(window);
@@ -97,12 +108,18 @@ int main() {
         window.draw(background); // Draw the background
         playButton.render(window); // Render the button
         ResumeButton.render(window); // Render the resume button
-        SettingsButton.render(window);//Render settings button
+        SettingsButton.render(window); // Render the settings button
         QuitButton.render(window); // Render the quit button
+        
+        if (showSettings) {
+            settingsPopup.render(); // Render the settings popup if it's visible
+        }
+
         if (loading) {
             window.draw(fadeRect); // Draw the fade rectangle
         }
-        window.display();
+
+        window.display(); // Display everything
     }
 
     return 0;
