@@ -15,6 +15,7 @@ enum ButtonState {
 class Button {
 private:
     //initialise 
+    std::vector<std::string> buttonVariants{"NewPlay", "Resume", "Quit", "Settings"};
     sf::Sprite buttonShape;
     sf::Color colorIdle;
     sf::Color colorHover;

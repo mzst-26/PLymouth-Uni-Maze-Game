@@ -23,8 +23,11 @@ int main() {
     );
 
     // Initialize the button from button.h
-    Button playButton(sf::Vector2f(550, 200), "Start"); // Center of the window with text "Start"
-
+    Button playButton(sf::Vector2f(550, 200), "NewPlay"); // Center of the window with text "Start"
+    Button ResumeButton(sf::Vector2f(550, 260), "Resume"); 
+    Button SettingsButton(sf::Vector2f(550, 320), "Settings");
+    Button QuitButton(sf::Vector2f(550, 380), "Quit");
+    
     // sor a smoother transition setup
     bool loading = false; // Loading state
     sf::Clock loadingClock; // Clock to delay loading 
@@ -44,18 +47,33 @@ int main() {
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     std::cout << "Mouse clicked at: (" << event.mouseButton.x << ", " << event.mouseButton.y << ")\n";
-                    // Update the button state
-                    playButton.update(window); // Call update here
+             
                     if (playButton.isPressed()) {
                         std::cout << "Button clicked!\n"; // Debug output
                         loading = true; // Set loading state
                         loadingClock.restart(); // Restart the clock
                     }
+                    if (ResumeButton.isPressed()) {
+                        std::cout << "Resume Button clicked!\n"; // Debug output
+                        // TODO: Implement resume logic here
+                    }
+                    if (SettingsButton.isPressed()) {
+                        std::cout << "Settings Button CLicked!\n"; // Debug output
+                        // TODO: Implement resume logic here
+                    }
+                    if (QuitButton.isPressed()) {
+                        std::cout << "Quit Button CLicked!\n"; // Debug output
+                        window.close();
+                        window.close();
+                    }
                 }
             }
         }
-
+        
         playButton.update(window); // Update the button state continuously
+        ResumeButton.update(window); // Update the button state continuously
+        SettingsButton.update(window);
+        QuitButton.update(window); // Update the button state continuously
 
         // If loading, simulate a delay and start the game
         if (loading) {
@@ -78,6 +96,9 @@ int main() {
         window.clear();
         window.draw(background); // Draw the background
         playButton.render(window); // Render the button
+        ResumeButton.render(window); // Render the resume button
+        SettingsButton.render(window);//Render settings button
+        QuitButton.render(window); // Render the quit button
         if (loading) {
             window.draw(fadeRect); // Draw the fade rectangle
         }

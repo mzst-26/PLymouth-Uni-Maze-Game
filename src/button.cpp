@@ -3,9 +3,9 @@
 // Constructor
 Button::Button(sf::Vector2f position, const std::string& text) {
     // Load textures for different status 
-    if (!texIdle.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/PlayButton.png") ||
-        !texHover.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/PlayHoverOrPressedButton.png") ||
-        !texPressed.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/PlayHoverOrPressedButton.png")) {
+    if (!texIdle.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/" + text + "Button.png") ||
+        !texHover.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/"+ text + "HOP.png") ||
+        !texPressed.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/"+ text +"HOP.png")) {
         std::cerr << "Error loading button textures!" << std::endl;
     }
     //initialise the texture and position of the buttonn and etc
