@@ -1,104 +1,86 @@
 #include <SFML/Graphics.hpp>
-#include "../include/maze.h"
-#include "../include/player.h"
-#include "../include/enemy.h"
-#include <iostream> // For std::cout
-#include <cstdlib>  // For rand()
-#include "../include/a_star.h"
-
-using namespace std;
+#include <iostream>
+#include "../include/game.h" // Include the Game class header
+#include "../include/button.h" // Include the Button class header
 
 int main() {
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
-
     // Create a render window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Mystery Maze");
-
-    // Create a Maze object
-    Maze maze(24, 14, 30, 0, 0);
+    sf::RenderWindow window(sf::VideoMode(1200, 800), "Mystery Maze - Main Menu");
     
-    // Create Player and Enemy objects
-    Player player(30, sf::Vector2i(rand() % 24, rand() % 14));
-    Enemy enemy(30, sf::Vector2i(rand() % 24, rand() % 14));
+    // Load background texture
+    sf::Texture backgroundTexture;
+    if (!backgroundTexture.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Backgrounds/MazeImageBackground.png")) {
+        std::cerr << "Error loading background image!" << std::endl;
+        return -1;
+    }
+    sf::Sprite background(backgroundTexture);
 
-    // Get player and enemy positions
-    sf::Vector2i start = enemy.GetEnemyPosition();
-    sf::Vector2i goal = player.GetPlayerPosition();
+    // Scale the background to fit the window
+    background.setScale(
+        static_cast<float>(window.getSize().x) / backgroundTexture.getSize().x,
+        static_cast<float>(window.getSize().y) / backgroundTexture.getSize().y
+    );
 
-    // Path vector for A* algorithm
-    std::vector<sf::Vector2i> path;
-    bool pathNeedsUpdate = true; // Flag to control path recalculation
+    // Initialize the button from button.h
+    Button playButton(sf::Vector2f(550, 200), "Start"); // Center of the window with text "Start"
 
-    // Movement cooldowns
-    const int PlayerMoveCooldown = 50; // Player cooldown in milliseconds
-    sf::Clock PlayerClock;
+    // sor a smoother transition setup
+    bool loading = false; // Loading state
+    sf::Clock loadingClock; // Clock to delay loading 
 
-    const int EnemyMoveCooldown = 150; // Enemy cooldown in milliseconds
-    sf::Clock EnemyClock;
+    // Fade rectangle setup
+    sf::RectangleShape fadeRect(sf::Vector2f(1200, 800)); // Full window size
+    fadeRect.setFillColor(sf::Color(0, 0, 0, 0)); // Start fully transparent
 
-    // Main game loop
+    // Main menu loop
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // Player movement with cooldown
-            if (event.type == sf::Event::KeyPressed) {
-                if (PlayerClock.getElapsedTime().asMilliseconds() >= PlayerMoveCooldown) {
-                    if (event.key.code == sf::Keyboard::W) player.move(sf::Vector2i(0, -1), maze); // Move up
-                    if (event.key.code == sf::Keyboard::S) player.move(sf::Vector2i(0, 1), maze);  // Move down
-                    if (event.key.code == sf::Keyboard::A) player.move(sf::Vector2i(-1, 0), maze); // Move left
-                    if (event.key.code == sf::Keyboard::D) player.move(sf::Vector2i(1, 0), maze);  // Move right
-
-                    PlayerClock.restart();
-                    pathNeedsUpdate = true; // Recalculate path when the player moves
+            // Check for button click
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    std::cout << "Mouse clicked at: (" << event.mouseButton.x << ", " << event.mouseButton.y << ")\n";
+                    // Update the button state
+                    playButton.update(window); // Call update here
+                    if (playButton.isPressed()) {
+                        std::cout << "Button clicked!\n"; // Debug output
+                        loading = true; // Set loading state
+                        loadingClock.restart(); // Restart the clock
+                    }
                 }
             }
         }
 
-        // Update maze
-        maze.update();
+        playButton.update(window); // Update the button state continuously
 
-        // Recalculate the path if needed
-        if (pathNeedsUpdate) {
-            path.clear();
-            start = enemy.GetEnemyPosition(); // Update enemy position
-            goal = player.GetPlayerPosition(); // Update player position
-
-            if (AStar::findPath(maze, start, goal, path)) {
-                std::cout << "Path found: ";
-                for (const auto& step : path) {
-                    std::cout << "(" << step.x << ", " << step.y << ") -> ";
-                }
-                std::cout << "Goal\n";
+        // If loading, simulate a delay and start the game
+        if (loading) {
+            // Fade in effect
+            sf::Color fadeColor = fadeRect.getFillColor();
+            if (fadeColor.a < 255) {
+                fadeColor.a += 5; // Increase alpha for fade effect
+                fadeRect.setFillColor(fadeColor);
             } else {
-                std::cout << "No path found!\n";
-            }
-            pathNeedsUpdate = false; // Reset flag
-        }
-
-        // Enemy movement with cooldown
-        if (maze.getIsGenerated()) { // Ensure the maze is generated
-            if (EnemyClock.getElapsedTime().asMilliseconds() >= EnemyMoveCooldown) {
-                if (!path.empty()) {
-                    sf::Vector2i nextStep = path.front(); // Get next position from A* path
-                    enemy.setPosition(nextStep);         // Move enemy
-                    path.erase(path.begin());            // Remove step from path
-                }
-                EnemyClock.restart();
+                if (loadingClock.getElapsedTime().asSeconds() >= 2.0f) {
+                    // Initialize the game after fade is complete
+                    Game game; // Create a Game object
+                    game.run(); // Call the run method to start the game
+                    window.close(); // Close the menu window
+                };
             }
         }
 
         // Clear window and draw everything
-        window.clear(sf::Color::Black);
-
-        maze.draw(window);      // Draw maze
-        if (maze.getIsGenerated()) {
-            player.draw(window); // Draw player
-            enemy.draw(window);  // Draw enemy
+        window.clear();
+        window.draw(background); // Draw the background
+        playButton.render(window); // Render the button
+        if (loading) {
+            window.draw(fadeRect); // Draw the fade rectangle
         }
-
         window.display();
     }
 
