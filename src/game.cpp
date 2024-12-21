@@ -63,22 +63,35 @@ void Game::run(LevelManager& levelManager) {
                     pathNeedsUpdate = true; // Recalculate path when the player moves
                 }
             }
-        // Escape door opening
-            start = enemy.GetEnemyPosition(); // Update enemy position
-            goal = player.GetPlayerPosition(); // Update player position
-            exit = escapeDoor.GetEscapeDoorPosition();
-            if(start == goal){
-                std::cout << "Enemy found the PLayer!" << std::endl;
-                window.close();      // Close the game window
-                showGameOverPopup();
+        }
 
-            }else if(goal == exit){
-                std::cout << "Player found the exit!" << std::endl;
-                window.close();      // Close the game window
-                showLuckyDayPopup();
-                
-            }
+        // Update positions
+        start = enemy.GetEnemyPosition(); // Update enemy position
+        goal = player.GetPlayerPosition(); // Update player position
+        exit = escapeDoor.GetEscapeDoorPosition();
 
+        if (start == goal) {
+            std::cout << "Enemy found the Player!" << std::endl;
+            
+            // Immediately stop the game
+            window.clear(sf::Color::Black);
+            window.display();
+            sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
+            
+            window.close(); // Close the game window
+            showGameOverPopup(); // Show the "Game Over" popup
+            return; // Exit the game loop and end the game
+        } else if (goal == exit) {
+            std::cout << "Player found the exit!" << std::endl;
+            
+            // Immediately stop the game
+            window.clear(sf::Color::Black);
+            window.display();
+            sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
+            
+            window.close(); // Close the game window
+            showLuckyDayPopup(); // Show the "Lucky Day" popup
+            return; // Exit the game loop and end the game
         }
 
         // Update maze
