@@ -23,7 +23,7 @@ public:
     bool getIsGenerated();
     bool allCellsVisited();
     sf::Vector2i getCurrentPosition() const; // Method to get the current position
-
+    void removeRandomWalls(int numExits);
     // Define the type of Cell object and its properties with their default values
     struct Cell {
         bool visited{false};

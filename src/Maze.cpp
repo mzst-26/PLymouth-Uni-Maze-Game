@@ -99,7 +99,10 @@ void Maze::generate() {
     }
         // Check if the maze is fully generated
     if (allCellsVisited()) {
-        is_generated = true; // Set the flag to true when generation is complete
+        is_generated = true;
+         // Create additional exits
+    int additionalExits = 8; // Number of additional exits to create
+    removeRandomWalls(additionalExits); // Set the flag to true when generation is complete
     }
 }
 
@@ -155,3 +158,47 @@ void Maze::draw(sf::RenderWindow &window) {
 }
 
 
+void Maze::removeRandomWalls(int numWallsToRemove) {
+    int wallsRemoved = 0;
+
+    while (wallsRemoved < numWallsToRemove) {
+        // Randomly select a cell
+        int x = rand() % maze_width;
+        int y = rand() % maze_height;
+
+        // Randomly choose a direction to remove a wall (0: top, 1: bottom, 2: left, 3: right)
+        int direction = rand() % 4;
+
+        // Determine the neighboring cell based on the chosen direction
+        int nx = x, ny = y;
+
+        switch (direction) {
+            case 0: ny -= 1; break; // Top
+            case 1: ny += 1; break; // Bottom
+            case 2: nx -= 1; break; // Left
+            case 3: nx += 1; break; // Right
+        }
+
+        // Ensure the neighbor is within bounds
+        if (nx >= 0 && nx < maze_width && ny >= 0 && ny < maze_height) {
+            // Remove the wall between the current cell and the neighboring cell
+            if (direction == 0 && maze_grid[x][y].top) { // Top wall
+                maze_grid[x][y].top = false;
+                maze_grid[nx][ny].bottom = false;
+                wallsRemoved++;
+            } else if (direction == 1 && maze_grid[x][y].bottom) { // Bottom wall
+                maze_grid[x][y].bottom = false;
+                maze_grid[nx][ny].top = false;
+                wallsRemoved++;
+            } else if (direction == 2 && maze_grid[x][y].left) { // Left wall
+                maze_grid[x][y].left = false;
+                maze_grid[nx][ny].right = false;
+                wallsRemoved++;
+            } else if (direction == 3 && maze_grid[x][y].right) { // Right wall
+                maze_grid[x][y].right = false;
+                maze_grid[nx][ny].left = false;
+                wallsRemoved++;
+            }
+        }
+    }
+}
