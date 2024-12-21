@@ -81,7 +81,7 @@ void SettingsPopup::handleInput(const sf::Event& event) {
             mediumButton.setScale(sf::Vector2f(1,1));
             hardButton.setScale(sf::Vector2f(1.2,1.2));
         }
-      
+
         }
     }
       //render and update the button

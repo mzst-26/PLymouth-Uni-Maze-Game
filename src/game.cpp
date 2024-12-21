@@ -3,12 +3,23 @@
 #include <iostream>
 #include <cstdlib>  // For rand()
 #include "../include/a_star.h"
+#include "../include/settingsPopup.h"
+#include "../include/escape.h"
 
 void Game::run() {
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
-
     // Create a render window
     sf::RenderWindow window(sf::VideoMode(1200, 800), "Mystery Maze");
+
+    // Create an instance of SettingsPopup
+    SettingsPopup settingsPopup(window);
+
+    // Get the difficulty level using the instance
+    std::string difficulty = settingsPopup.getCurrentDifficulty();
+    //output it in cout
+    std::cout << "Difficulty level: " << difficulty << std::endl;
+
+    //get the Level
 
     // Create a Maze object
     Maze maze(24, 14, 30, 0, 0);
@@ -16,10 +27,12 @@ void Game::run() {
     // Create Player and Enemy objects
     Player player(30, sf::Vector2i(rand() % 24, rand() % 14));
     Enemy enemy(30, sf::Vector2i(rand() % 24, rand() % 14));
+    EscapeDoor escapeDoor(30, sf::Vector2i(rand() % 24, rand() % 14));
 
-    // Get player and enemy positions
+    // Get player, enemy and exit positions
     sf::Vector2i start = enemy.GetEnemyPosition();
     sf::Vector2i goal = player.GetPlayerPosition();
+    sf::Vector2i exit = escapeDoor.GetEscapeDoorPosition();
 
     // Path vector for A* algorithm
     std::vector<sf::Vector2i> path;
@@ -51,6 +64,16 @@ void Game::run() {
                     pathNeedsUpdate = true; // Recalculate path when the player moves
                 }
             }
+        // Escape door opening
+            start = enemy.GetEnemyPosition(); // Update enemy position
+            goal = player.GetPlayerPosition(); // Update player position
+            exit = escapeDoor.GetEscapeDoorPosition();
+            if(start == goal){
+                std::cout << "Enemy found the PLayer!" << std::endl;
+            }else if(goal == exit){
+                std::cout << "Player found the exit!" << std::endl;
+            }
+
         }
 
         // Update maze
@@ -61,7 +84,7 @@ void Game::run() {
             path.clear();
             start = enemy.GetEnemyPosition(); // Update enemy position
             goal = player.GetPlayerPosition(); // Update player position
-
+            exit = escapeDoor.GetEscapeDoorPosition();
             if (AStar::findPath(maze, start, goal, path)) {
                 std::cout << "Path found: ";
                 for (const auto& step : path) {
@@ -71,6 +94,7 @@ void Game::run() {
             } else {
                 std::cout << "No path found!\n";
             }
+
             pathNeedsUpdate = false; // Reset flag
         }
 
@@ -93,6 +117,7 @@ void Game::run() {
         if (maze.getIsGenerated()) {
             player.draw(window); // Draw player
             enemy.draw(window);  // Draw enemy
+            escapeDoor.draw(window); // Draw escape door
         }
 
         window.display();
