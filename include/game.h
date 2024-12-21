@@ -2,10 +2,11 @@
 #define GAME_H
 
 #include <SFML/Graphics.hpp>
+#include "levelManager.h"
 
 class Game {
 public:
-    void run(); // Method to start the game loop
+    void run(LevelManager& levelManager); // Method to start the game loop
 };
 
 #endif // GAME_H

@@ -5,12 +5,15 @@
 #include <vector>
 #include <string>
 #include "button.h"
+#include "levelManager.h"
+
+class LevelManager;
 
 class SettingsPopup {
 public:
     SettingsPopup(sf::RenderWindow& window);
     void render();
-    void handleInput(const sf::Event& event);
+    void handleInput(const sf::Event& event, LevelManager& levelManager);
     std::string getCurrentDifficulty() const;
 
 private:

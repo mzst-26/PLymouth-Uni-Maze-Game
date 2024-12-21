@@ -5,29 +5,27 @@
 #include "../include/a_star.h"
 #include "../include/settingsPopup.h"
 #include "../include/escape.h"
+#include "../include/levelManager.h"
 
-void Game::run() {
+void Game::run(LevelManager& levelManager) {
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
     // Create a render window
     sf::RenderWindow window(sf::VideoMode(1200, 800), "Mystery Maze");
 
     // Create an instance of SettingsPopup
     SettingsPopup settingsPopup(window);
-
-    // Get the difficulty level using the instance
-    std::string difficulty = settingsPopup.getCurrentDifficulty();
-    //output it in cout
-    std::cout << "Difficulty level: " << difficulty << std::endl;
-
-    //get the Level
+    
+    //initialise the Maze width and height
+    int mazeWidth = levelManager.getMazeWidth();
+    int mazeHeight = levelManager.getMazeHeight();
 
     // Create a Maze object
-    Maze maze(24, 14, 30, 0, 0);
+    Maze maze(mazeWidth, mazeHeight, 30, 0, 0);
     
     // Create Player and Enemy objects
-    Player player(30, sf::Vector2i(rand() % 24, rand() % 14));
-    Enemy enemy(30, sf::Vector2i(rand() % 24, rand() % 14));
-    EscapeDoor escapeDoor(30, sf::Vector2i(rand() % 24, rand() % 14));
+    Player player(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
+    Enemy enemy(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
+    EscapeDoor escapeDoor(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
 
     // Get player, enemy and exit positions
     sf::Vector2i start = enemy.GetEnemyPosition();
@@ -77,7 +75,7 @@ void Game::run() {
         }
 
         // Update maze
-        maze .update();
+        maze.update();
 
         // Recalculate the path if needed
         if (pathNeedsUpdate) {
@@ -85,7 +83,7 @@ void Game::run() {
             start = enemy.GetEnemyPosition(); // Update enemy position
             goal = player.GetPlayerPosition(); // Update player position
             exit = escapeDoor.GetEscapeDoorPosition();
-            if (AStar::findPath(maze, start, goal, path)) {
+            if (AStar::findPath(maze, start, goal, path, levelManager)) {
                 std::cout << "Path found: ";
                 for (const auto& step : path) {
                     std::cout << "(" << step.x << ", " << step.y << ") -> ";

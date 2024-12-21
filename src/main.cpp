@@ -3,12 +3,15 @@
 #include "../include/game.h" // Include the Game class header
 #include "../include/button.h" // Include the Button class header
 #include "../include/settingsPopup.h" 
-
+#include "../include/levelManager.h"
 int main() {
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
     // Create a render window
     sf::RenderWindow window(sf::VideoMode(1200, 800), "Mystery Maze - Main Menu");
-    
+
+    //instance of Level Manager
+    LevelManager levelManager;
+
     // Load background texture
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Backgrounds/MazeImageBackground.png")) {
@@ -76,7 +79,7 @@ int main() {
             }
             // Handle settings input if the popup is shown
             if (showSettings) {
-                settingsPopup.handleInput(event); // Process events for settings popup
+                settingsPopup.handleInput(event, levelManager); // Process events for settings popup
             }
         }
 
@@ -97,7 +100,7 @@ int main() {
                 if (loadingClock.getElapsedTime().asSeconds() >= 2.0f) {
                     // Initialize the game after fade is complete
                     Game game; // Create a Game object
-                    game.run(); // Call the run method to start the game
+                    game.run(levelManager); // Call the run method to start the game
                     window.close(); // Close the menu window
                 };
             }

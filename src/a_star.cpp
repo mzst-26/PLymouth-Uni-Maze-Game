@@ -10,9 +10,12 @@ int AStar::heuristic(const sf::Vector2i& a, const sf::Vector2i& b) {
 }
 
 // Check if a cell is valid (not visited and navigable)
-bool AStar::isValid(const sf::Vector2i& current, const sf::Vector2i& next, const Maze& maze, const vector<vector<bool>>& visited) {
-    // Check if next cell is within bounds and not already visited
-    if (next.x < 0 || next.y < 0 || next.x >= 24 || next.y >= 14 || visited[next.x][next.y]) 
+bool AStar::isValid(const sf::Vector2i& current, const sf::Vector2i& next, const Maze& maze, const vector<vector<bool>>& visited, LevelManager& levelManager) {
+    //initialise the Maze width and height
+    int mazeWidth = levelManager.getMazeWidth();
+    int mazeHeight = levelManager.getMazeHeight();
+     // Check if next cell is within bounds and not already visited
+    if (next.x < 0 || next.y < 0 || next.x >= mazeWidth || next.y >= mazeHeight || visited[next.x][next.y]) 
         return false;
 
     const auto& grid = maze.getMazeGrid();
@@ -29,10 +32,12 @@ bool AStar::isValid(const sf::Vector2i& current, const sf::Vector2i& next, const
 
 
 // A* pathfinding algorithm
-bool AStar::findPath(const Maze& maze, const sf::Vector2i& start, const sf::Vector2i& goal, vector<sf::Vector2i>& path) {
+bool AStar::findPath(const Maze& maze, const sf::Vector2i& start, const sf::Vector2i& goal, vector<sf::Vector2i>& path, LevelManager& levelManager ) {
     priority_queue<AStarCell> openList; // Priority queue for open cells
-    vector<vector<bool>> visited(24, vector<bool>(14, false));
-
+    //initialise the maze width and height
+    int mazeWidth = levelManager.getMazeWidth();
+    int mazeHeight = levelManager.getMazeHeight();
+    vector<vector<bool>> visited(mazeWidth, vector<bool>(14, false));
     // Initialize start cell
     AStarCell startCell = {start, 0, heuristic(start, goal), nullptr};
     openList.push(startCell);
@@ -62,7 +67,7 @@ bool AStar::findPath(const Maze& maze, const sf::Vector2i& start, const sf::Vect
        for (int i = 0; i < 4; ++i) {
             sf::Vector2i next = {current.currentPosition.x + dx[i], current.currentPosition.y + dy[i]};
 
-            if (isValid(current.currentPosition, next, maze, visited)) {
+            if (isValid(current.currentPosition, next, maze, visited, levelManager)) {
                 AStarCell neighbor = {next, current.g + 1, heuristic(next, goal), new AStarCell(current)};
                 openList.push(neighbor);
             }

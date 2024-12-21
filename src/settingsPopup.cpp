@@ -8,10 +8,7 @@ SettingsPopup::SettingsPopup(sf::RenderWindow& window)
       mediumButton(sf::Vector2f(550, 440), "Medium"),
       hardButton(sf::Vector2f(600, 440), "Hard"),
       activeButtonIndex(0),
-      currentDifficulty("Easy") {
-    easyButton.setButtonState(PRESSED);
-    std::cout << "Default button: Easy" << std::endl;
-    
+      currentDifficulty() {
      // Load font for title text
     if (!titleFont.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/fonts/font.ttf")) {
         std::cerr << "Error: Could not load font!" << std::endl;
@@ -23,8 +20,6 @@ SettingsPopup::SettingsPopup(sf::RenderWindow& window)
     titleText.setCharacterSize(24);
     titleText.setFillColor(sf::Color::White);
     titleText.setPosition(200, 440); // Position slightly above the buttons
-
-    std::cout << "Default button: Easy" << std::endl;
 }
 
 
@@ -39,7 +34,8 @@ void SettingsPopup::render() {
 }
 
 
-void SettingsPopup::handleInput(const sf::Event& event) {
+void SettingsPopup::handleInput(const sf::Event& event, LevelManager& levelManager) {
+// Create an instance of SettingsPopup
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
         if (easyButton.isPressed(window)) {
@@ -54,6 +50,7 @@ void SettingsPopup::handleInput(const sf::Event& event) {
             easyButton.setScale(sf::Vector2f(1.2, 1.2));
             mediumButton.setScale(sf::Vector2f(1,1));
             hardButton.setScale(sf::Vector2f(1,1));
+            levelManager.setDifficulty(currentDifficulty);
         } else if (mediumButton.isPressed(window)) {
             // Activate Medium button
             easyButton.setButtonState(IDLE);
@@ -68,6 +65,7 @@ void SettingsPopup::handleInput(const sf::Event& event) {
             easyButton.setScale(sf::Vector2f(1, 1));
             mediumButton.setScale(sf::Vector2f(1.2,1.2));
             hardButton.setScale(sf::Vector2f(1,1));
+            levelManager.setDifficulty(currentDifficulty);
         } else if (hardButton.isPressed(window)) {
             // Activate Hard button
             easyButton.setButtonState(IDLE);
@@ -80,6 +78,7 @@ void SettingsPopup::handleInput(const sf::Event& event) {
             easyButton.setScale(sf::Vector2f(1,1));
             mediumButton.setScale(sf::Vector2f(1,1));
             hardButton.setScale(sf::Vector2f(1.2,1.2));
+            levelManager.setDifficulty(currentDifficulty);
         }
 
         }
