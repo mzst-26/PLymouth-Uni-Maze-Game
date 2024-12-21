@@ -6,6 +6,7 @@
 #include "../include/settingsPopup.h"
 #include "../include/escape.h"
 #include "../include/levelManager.h"
+#include "../include/winOrLoosePopup.h"
 
 void Game::run(LevelManager& levelManager) {
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
@@ -14,7 +15,7 @@ void Game::run(LevelManager& levelManager) {
 
     // Create an instance of SettingsPopup
     SettingsPopup settingsPopup(window);
-    
+
     //initialise the Maze width and height
     int mazeWidth = levelManager.getMazeWidth();
     int mazeHeight = levelManager.getMazeHeight();
@@ -68,8 +69,14 @@ void Game::run(LevelManager& levelManager) {
             exit = escapeDoor.GetEscapeDoorPosition();
             if(start == goal){
                 std::cout << "Enemy found the PLayer!" << std::endl;
+                window.close();      // Close the game window
+                showGameOverPopup();
+
             }else if(goal == exit){
                 std::cout << "Player found the exit!" << std::endl;
+                window.close();      // Close the game window
+                showLuckyDayPopup();
+                
             }
 
         }
