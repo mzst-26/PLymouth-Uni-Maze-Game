@@ -11,7 +11,7 @@ Maze::Maze(int width, int height, int cell_size, int starting_point_X, int start
     : maze_width{width}, maze_height{height}, cell_size{cell_size}, 
       current_position{starting_point_X, starting_point_Y}, 
       maze_grid(width, vector<Maze::Cell>(height)), 
-      is_generated{false} { // Initialize is_generated
+      is_generated{false}, is_wallsRemoved{false} { // Initialize is_generated
 
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
     // Get the coordinates of the current cell
@@ -100,9 +100,6 @@ void Maze::generate() {
         // Check if the maze is fully generated
     if (allCellsVisited()) {
         is_generated = true;
-         // Create additional exits
-    int additionalExits = 8; // Number of additional exits to create
-    removeRandomWalls(additionalExits); // Set the flag to true when generation is complete
     }
 }
 
@@ -117,7 +114,9 @@ void Maze::update() {
 bool Maze::getIsGenerated() {
     return is_generated;
 }
-
+bool Maze::isWallsRemoved(){
+     return is_wallsRemoved;
+}
 // Function to draw the maze using SFML
 void Maze::draw(sf::RenderWindow &window) {
     for (int y = 0; y < maze_height; y++) {
@@ -160,7 +159,7 @@ void Maze::draw(sf::RenderWindow &window) {
 
 void Maze::removeRandomWalls(int numWallsToRemove) {
     int wallsRemoved = 0;
-
+    is_wallsRemoved = true;
     while (wallsRemoved < numWallsToRemove) {
         // Randomly select a cell
         int x = rand() % maze_width;

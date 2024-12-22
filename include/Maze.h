@@ -24,6 +24,7 @@ public:
     bool allCellsVisited();
     sf::Vector2i getCurrentPosition() const; // Method to get the current position
     void removeRandomWalls(int numExits);
+    bool isWallsRemoved();
     // Define the type of Cell object and its properties with their default values
     struct Cell {
         bool visited{false};
@@ -46,6 +47,7 @@ private:
     stack<sf::Vector2i> backtracking_stack;
     void generate();
     bool is_generated{false};
+    bool is_wallsRemoved{false};
     
     optional<sf::Vector2i> choose_next_cell();
 };

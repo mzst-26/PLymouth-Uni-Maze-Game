@@ -18,6 +18,8 @@ class LevelManager {
     int getCurrentLevel() const; 
     int getEnemyGenerateAmount() const;
     int getEnemySpeed()const;
+    int getMazeWallRemovalAmount() const;
+
     private:
     // Private members and methods go here
     int currentLevel{1};
@@ -26,6 +28,7 @@ class LevelManager {
     int mazeHeight; 
     int amountOfenemy;
     int enemySpeed;
+    int mazeWallRemovalAmount;
     void adjustMazeDimensions();   // Adjust maze dimensions based on difficulty and level
     void resetLevelState();  
      // Create an instance of SettingsPopup  

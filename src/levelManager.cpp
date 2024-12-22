@@ -9,7 +9,8 @@ LevelManager::LevelManager()
       mazeWidth(10),
       mazeHeight(8),
       amountOfenemy(1),
-      enemySpeed(200) {
+      enemySpeed(500),
+      mazeWallRemovalAmount(8){
 // Initialize maze dimensions
  adjustMazeDimensions();
 }
@@ -36,29 +37,36 @@ void LevelManager::adjustMazeDimensions() {
     if (difficulty == "Easy" && currentLevel <=3 ) {
         mazeWidth = 10 + currentLevel * 2;  // Easy: Small maze grows slowly
         mazeHeight = 8 + currentLevel * 2;
+        std::cout<<"Easy number 1";
     }else if (difficulty == "Easy" && currentLevel > 3 ) {
         amountOfenemy = 2;
         enemySpeed = 170;
+        mazeWallRemovalAmount = 8;
         mazeWidth = 10 + currentLevel * 2;  // Easy: Small maze grows slowly
         mazeHeight = 8 + currentLevel * 2;
+        std::cout<<"Easy number 2";
     } else if (difficulty == "Medium" && currentLevel <=3) {
         amountOfenemy = 2;
         enemySpeed = 160;
+        mazeWallRemovalAmount = 20;
         mazeWidth = 15 + currentLevel * 3; // Medium: Moderate maze growth
         mazeHeight = 10 + currentLevel * 3;
     } else if (difficulty == "Medium" && currentLevel > 3) {
         amountOfenemy = 3;
         enemySpeed = 150;
+        mazeWallRemovalAmount = 25;
         mazeWidth = 15 + currentLevel * 3; // Medium: Moderate maze growth
         mazeHeight = 10 + currentLevel * 3;
     } else if (difficulty == "Hard" && currentLevel <=3) {
         amountOfenemy = 3;
         enemySpeed = 150;
+        mazeWallRemovalAmount = 25;
         mazeWidth = 20 + currentLevel * 5; // Hard: Larger maze, grows quickly
         mazeHeight = 16 + currentLevel * 5;
     }else if (difficulty == "Hard" && currentLevel > 3) {
         amountOfenemy = 4;
         enemySpeed = 140;
+        mazeWallRemovalAmount = 30;
         mazeWidth = 20 + currentLevel * 5; // Hard: Larger maze, grows quickly
         mazeHeight = 16 + currentLevel * 5;
     } else {
@@ -76,9 +84,14 @@ int LevelManager::getEnemyGenerateAmount() const{
 int LevelManager::getEnemySpeed() const{
      return enemySpeed;
 }
+int LevelManager::getMazeWallRemovalAmount() const{
+     return mazeWallRemovalAmount;
+}
+
 void LevelManager::update() {
     // Update level-specific logic here
 }
+
 
 void LevelManager::render(sf::RenderWindow& window) {
     // Render the current level here

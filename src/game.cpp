@@ -19,7 +19,8 @@ void Game::run(LevelManager& levelManager) {
     //initialise the Maze width and height
     int mazeWidth = levelManager.getMazeWidth();
     int mazeHeight = levelManager.getMazeHeight();
-
+    int enemySpeed = levelManager.getEnemySpeed();
+    int enemyAmount = levelManager.getEnemyGenerateAmount();
     // Create a Maze object
     Maze maze(mazeWidth, mazeHeight, 30, 0, 0);
     
@@ -41,7 +42,7 @@ void Game::run(LevelManager& levelManager) {
     const int PlayerMoveCooldown = 50; // Player cooldown in milliseconds
     sf::Clock PlayerClock;
 
-    const int EnemyMoveCooldown = 150; // Enemy cooldown in milliseconds
+    const int EnemyMoveCooldown = enemySpeed; // Enemy cooldown in milliseconds
     sf::Clock EnemyClock;
 
     // Main game loop
@@ -88,7 +89,9 @@ void Game::run(LevelManager& levelManager) {
             window.clear(sf::Color::Black);
             window.display();
             sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
-            
+            // Update maze
+            maze.update();
+
             window.close(); // Close the game window
             showLuckyDayPopup(levelManager); // Show the "Lucky Day" popup
             return; // Exit the game loop and end the game
@@ -130,9 +133,15 @@ void Game::run(LevelManager& levelManager) {
 
         // Clear window and draw everything
         window.clear(sf::Color::Black);
-
-        maze.draw(window);      // Draw maze
+        
+        maze.draw(window);     // Draw maze
         if (maze.getIsGenerated()) {
+            if (maze.allCellsVisited() && !maze.isWallsRemoved()){
+            // Create additional exits and remove some walls randomly
+            int additionalExits = 8; // Number of additional exits to create
+            maze.removeRandomWalls(additionalExits); // Set the flag to true when generation is complete
+            std::cout<<"walls removed"<< additionalExits;
+             }
             player.draw(window); // Draw player
             enemy.draw(window);  // Draw enemy
             escapeDoor.draw(window); // Draw escape door
