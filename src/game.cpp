@@ -77,20 +77,20 @@ void Game::run(LevelManager& levelManager) {
             window.clear(sf::Color::Black);
             window.display();
             sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
-            
             window.close(); // Close the game window
-            showGameOverPopup(); // Show the "Game Over" popup
+            showGameOverPopup(levelManager); // Show the "Game Over" popup
             return; // Exit the game loop and end the game
         } else if (goal == exit) {
             std::cout << "Player found the exit!" << std::endl;
-            
+            int currentLevel = levelManager.getCurrentLevel();
+            levelManager.loadLevel(currentLevel + 1);
             // Immediately stop the game
             window.clear(sf::Color::Black);
             window.display();
             sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
             
             window.close(); // Close the game window
-            showLuckyDayPopup(); // Show the "Lucky Day" popup
+            showLuckyDayPopup(levelManager); // Show the "Lucky Day" popup
             return; // Exit the game loop and end the game
         }
 

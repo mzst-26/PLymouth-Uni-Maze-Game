@@ -16,13 +16,16 @@ class LevelManager {
     int getMazeWidth() const;                          // Get maze width
     int getMazeHeight() const;                         // Get maze height
     int getCurrentLevel() const; 
-    
+    int getEnemyGenerateAmount() const;
+    int getEnemySpeed()const;
     private:
     // Private members and methods go here
     int currentLevel{1};
     std::string difficulty;
     int mazeWidth;                 // Maze width based on difficulty
     int mazeHeight; 
+    int amountOfenemy;
+    int enemySpeed;
     void adjustMazeDimensions();   // Adjust maze dimensions based on difficulty and level
     void resetLevelState();  
      // Create an instance of SettingsPopup  

@@ -6,8 +6,10 @@
 LevelManager::LevelManager()
     : currentLevel(1), 
       difficulty("Easy"), // Use the instance
-      mazeWidth(10), 
-      mazeHeight(8) {
+      mazeWidth(10),
+      mazeHeight(8),
+      amountOfenemy(1),
+      enemySpeed(200) {
 // Initialize maze dimensions
  adjustMazeDimensions();
 }
@@ -31,19 +33,35 @@ void LevelManager::loadLevel(int levelNumber) {
 
 void LevelManager::adjustMazeDimensions() {
     // Adjust maze size based on difficulty and level
-    if (difficulty == "Easy") {
+    if (difficulty == "Easy" && currentLevel <=3 ) {
         mazeWidth = 10 + currentLevel * 2;  // Easy: Small maze grows slowly
         mazeHeight = 8 + currentLevel * 2;
-    } else if (difficulty == "Medium") {
+    }else if (difficulty == "Easy" && currentLevel > 3 ) {
+        amountOfenemy = 2;
+        enemySpeed = 170;
+        mazeWidth = 10 + currentLevel * 2;  // Easy: Small maze grows slowly
+        mazeHeight = 8 + currentLevel * 2;
+    } else if (difficulty == "Medium" && currentLevel <=3) {
+        amountOfenemy = 2;
+        enemySpeed = 160;
         mazeWidth = 15 + currentLevel * 3; // Medium: Moderate maze growth
         mazeHeight = 10 + currentLevel * 3;
-    } else if (difficulty == "Hard") {
+    } else if (difficulty == "Medium" && currentLevel > 3) {
+        amountOfenemy = 3;
+        enemySpeed = 150;
+        mazeWidth = 15 + currentLevel * 3; // Medium: Moderate maze growth
+        mazeHeight = 10 + currentLevel * 3;
+    } else if (difficulty == "Hard" && currentLevel <=3) {
+        amountOfenemy = 3;
+        enemySpeed = 150;
+        mazeWidth = 20 + currentLevel * 5; // Hard: Larger maze, grows quickly
+        mazeHeight = 16 + currentLevel * 5;
+    }else if (difficulty == "Hard" && currentLevel > 3) {
+        amountOfenemy = 4;
+        enemySpeed = 140;
         mazeWidth = 20 + currentLevel * 5; // Hard: Larger maze, grows quickly
         mazeHeight = 16 + currentLevel * 5;
     } else {
-        // Default case
-        mazeWidth = 10;
-        mazeHeight = 10;
         std::cout << "Invalid difficulty level. Using default settings." << std::endl;
     }
 }
@@ -52,7 +70,12 @@ void LevelManager::resetLevelState() {
     // Reset variables for the new level
     std::cout << "Resetting level-specific state..." << std::endl;
 }
-
+int LevelManager::getEnemyGenerateAmount() const{
+     return amountOfenemy;
+}
+int LevelManager::getEnemySpeed() const{
+     return enemySpeed;
+}
 void LevelManager::update() {
     // Update level-specific logic here
 }
