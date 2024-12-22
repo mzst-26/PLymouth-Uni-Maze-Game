@@ -21,21 +21,24 @@ void Game::run(LevelManager& levelManager) {
     int mazeHeight = levelManager.getMazeHeight();
     int enemySpeed = levelManager.getEnemySpeed();
     int enemyAmount = levelManager.getEnemyGenerateAmount();
+    std::vector<Enemy> enemies; // Vector to hold multiple enemies
     // Create a Maze object
     Maze maze(mazeWidth, mazeHeight, 30, 0, 0);
     
     // Create Player and Enemy objects
     Player player(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
-    Enemy enemy(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
+    // Enemy enemy(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
     EscapeDoor escapeDoor(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
-
-    // Get player, enemy and exit positions
-    sf::Vector2i start = enemy.GetEnemyPosition();
+    for (int i = 0; i < enemyAmount; ++i) {
+        sf::Vector2i randomPosition(rand() % mazeWidth, rand() % mazeHeight);
+        enemies.emplace_back(30, randomPosition); // Create and add an enemy to the vector
+    }
+    // Get player and exit positions
     sf::Vector2i goal = player.GetPlayerPosition();
     sf::Vector2i exit = escapeDoor.GetEscapeDoorPosition();
 
     // Path vector for A* algorithm
-    std::vector<sf::Vector2i> path;
+    std::vector<std::vector<sf::Vector2i>> paths(enemyAmount);
     bool pathNeedsUpdate = true; // Flag to control path recalculation
 
     // Movement cooldowns
@@ -43,7 +46,8 @@ void Game::run(LevelManager& levelManager) {
     sf::Clock PlayerClock;
 
     const int EnemyMoveCooldown = enemySpeed; // Enemy cooldown in milliseconds
-    sf::Clock EnemyClock;
+    std::vector<sf::Clock> enemyClocks(enemyAmount); // Separate clock for each enemy
+
 
     // Main game loop
     while (window.isOpen()) {
@@ -66,22 +70,28 @@ void Game::run(LevelManager& levelManager) {
             }
         }
 
-        // Update positions
-        start = enemy.GetEnemyPosition(); // Update enemy position
         goal = player.GetPlayerPosition(); // Update player position
         exit = escapeDoor.GetEscapeDoorPosition();
-
-        if (start == goal) {
-            std::cout << "Enemy found the Player!" << std::endl;
+         for (size_t i = 0; i < enemies.size(); ++i) {
+        if (enemies[i].GetEnemyPosition() == goal) {
+            std::cout << "Enemy " << i << " found the Player!" << std::endl;
+            window.close();
+            showGameOverPopup(levelManager);
+            return;
+        }
+    }
+        // if (start == goal) {
+        //     std::cout << "Enemy found the Player!" << std::endl;
             
-            // Immediately stop the game
-            window.clear(sf::Color::Black);
-            window.display();
-            sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
-            window.close(); // Close the game window
-            showGameOverPopup(levelManager); // Show the "Game Over" popup
-            return; // Exit the game loop and end the game
-        } else if (goal == exit) {
+        //     // Immediately stop the game
+        //     window.clear(sf::Color::Black);
+        //     window.display();
+        //     sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
+        //     window.close(); // Close the game window
+        //     showGameOverPopup(levelManager); // Show the "Game Over" popup
+        //     return; // Exit the game loop and end the game
+        // }
+          if (goal == exit) {
             std::cout << "Player found the exit!" << std::endl;
             int currentLevel = levelManager.getCurrentLevel();
             levelManager.loadLevel(currentLevel + 1);
@@ -101,35 +111,42 @@ void Game::run(LevelManager& levelManager) {
         maze.update();
 
         // Recalculate the path if needed
-        if (pathNeedsUpdate) {
-            path.clear();
-            start = enemy.GetEnemyPosition(); // Update enemy position
-            goal = player.GetPlayerPosition(); // Update player position
-            exit = escapeDoor.GetEscapeDoorPosition();
-            if (AStar::findPath(maze, start, goal, path, levelManager)) {
-                std::cout << "Path found: ";
-                for (const auto& step : path) {
-                    std::cout << "(" << step.x << ", " << step.y << ") -> ";
+       if (pathNeedsUpdate) {
+            for (size_t i = 0; i < enemies.size(); ++i) {
+                paths[i].clear();
+                if (AStar::findPath(maze, enemies[i].GetEnemyPosition(), goal, paths[i], levelManager)) {
+                    std::cout << "Path for Enemy " << i << " found.\n";
+                } else {
+                    std::cout << "No path for Enemy " << i << ".\n";
                 }
-                std::cout << "Goal\n";
-            } else {
-                std::cout << "No path found!\n";
             }
-
-            pathNeedsUpdate = false; // Reset flag
+            pathNeedsUpdate = false;
         }
-
-        // Enemy movement with cooldown
-        if (maze.getIsGenerated()) { // Ensure the maze is generated
-            if (EnemyClock.getElapsedTime().asMilliseconds() >= EnemyMoveCooldown) {
-                if (!path.empty()) {
-                    sf::Vector2i nextStep = path.front(); // Get next position from A* path
-                    enemy.setPosition(nextStep);         // Move enemy
-                    path.erase(path.begin());            // Remove step from path
+          // Move each enemy
+        if (maze.getIsGenerated()){
+            for (size_t i = 0; i < enemies.size(); ++i) {
+                if (enemyClocks[i].getElapsedTime().asMilliseconds() >= EnemyMoveCooldown) {
+                    if (!paths[i].empty()) {
+                        sf::Vector2i nextStep = paths[i].front();
+                        enemies[i].setPosition(nextStep);
+                        paths[i].erase(paths[i].begin());
+                    }
+                    enemyClocks[i].restart();
                 }
-                EnemyClock.restart();
             }
         }
+     
+        // // Enemy movement with cooldown
+        // if (maze.getIsGenerated()) { // Ensure the maze is generated
+        //     if (EnemyClock.getElapsedTime().asMilliseconds() >= EnemyMoveCooldown) {
+        //         if (!path.empty()) {
+        //             sf::Vector2i nextStep = path.front(); // Get next position from A* path
+        //             enemy.setPosition(nextStep);         // Move enemy
+        //             path.erase(path.begin());            // Remove step from path
+        //         }
+        //         EnemyClock.restart();
+        //     }
+        // }
 
         // Clear window and draw everything
         window.clear(sf::Color::Black);
@@ -143,7 +160,9 @@ void Game::run(LevelManager& levelManager) {
             std::cout<<"walls removed"<< additionalExits;
              }
             player.draw(window); // Draw player
-            enemy.draw(window);  // Draw enemy
+            for (auto& enemy : enemies) {
+                enemy.draw(window); // Draw each enemy
+            }
             escapeDoor.draw(window); // Draw escape door
         }
 
