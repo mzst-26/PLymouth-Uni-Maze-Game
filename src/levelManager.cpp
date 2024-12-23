@@ -1,5 +1,6 @@
 #include "../include/levelManager.h"
 #include <iostream>
+#include "../include/game.h"
 
 
 
@@ -98,7 +99,8 @@ void LevelManager::render(sf::RenderWindow& window) {
     // Draw maze, player, enemy, and other level elements
 }
 
-int LevelManager::getMazeWidth() const {
+int LevelManager::getMazeWidth() const
+{
     return mazeWidth;
 }
 
@@ -109,3 +111,4 @@ int LevelManager::getMazeHeight() const {
 int LevelManager::getCurrentLevel() const {
     return currentLevel;
 }
+

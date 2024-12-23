@@ -11,7 +11,8 @@ class LevelManager {
     void setDifficulty(std::string difficulty); // Set difficulty level
     void loadLevel(int levelNumber);                   // Load a specific level
     void update();                                     // Update level logic
-    void render(sf::RenderWindow& window);             // Render the current level
+    void render(sf::RenderWindow& window);  // Render the current level
+    void handleWinLoose(std::string status);
 
     int getMazeWidth() const;                          // Get maze width
     int getMazeHeight() const;                         // Get maze height
@@ -19,6 +20,7 @@ class LevelManager {
     int getEnemyGenerateAmount() const;
     int getEnemySpeed()const;
     int getMazeWallRemovalAmount() const;
+    
 
     private:
     // Private members and methods go here

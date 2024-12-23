@@ -52,7 +52,7 @@ void createWinOrLoosePopupWindow(const std::string& message, const sf::Color& bg
                 if (restart.isPressed(window)){
                     // Restart the game
                     window.close();
-                    Game game; // Create a Game object
+                    Game game(window); // Create a Game object
                     game.run(levelManager); // Call the run method to start the game
                     window.close();
                     window.close();
@@ -61,7 +61,7 @@ void createWinOrLoosePopupWindow(const std::string& message, const sf::Color& bg
                 if (nextlevel.isPressed(window)){
                     // Restart the game
                     window.close();
-                    Game game; // Create a Game object
+                    Game game(window); // Create a Game object
                     game.run(levelManager); // Call the run method to start the game
                     window.close();
                     window.close();

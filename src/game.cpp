@@ -7,11 +7,18 @@
 #include "../include/escape.h"
 #include "../include/levelManager.h"
 #include "../include/winOrLoosePopup.h"
+#include "../include/home.h"
 
-void Game::run(LevelManager& levelManager) {
+Game::Game(sf::RenderWindow& window)
+    : window(window) // Initialize the window reference
+{
+    // Additional initialization if necessary
+}
+
+void Game::run(LevelManager& levelManager){
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
     // Create a render window
-    sf::RenderWindow window(sf::VideoMode(1200, 800), "Mystery Maze");
+    // sf::RenderWindow window(sf::VideoMode(1200, 800), "Mystery Maze");
 
     // Create an instance of SettingsPopup
     SettingsPopup settingsPopup(window);
@@ -29,14 +36,19 @@ void Game::run(LevelManager& levelManager) {
     Player player(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
     // Enemy enemy(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
     EscapeDoor escapeDoor(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
+    
+    // Create multiple enemies
     for (int i = 0; i < enemyAmount; ++i) {
         sf::Vector2i randomPosition(rand() % mazeWidth, rand() % mazeHeight);
         enemies.emplace_back(30, randomPosition); // Create and add an enemy to the vector
     }
+    //create Home Page button
+    Button HomeButton(sf::Vector2f(1100, 200), "Home");
+
     // Get player and exit positions
     sf::Vector2i goal = player.GetPlayerPosition();
     sf::Vector2i exit = escapeDoor.GetEscapeDoorPosition();
-
+  
     // Path vector for A* algorithm
     std::vector<std::vector<sf::Vector2i>> paths(enemyAmount);
     bool pathNeedsUpdate = true; // Flag to control path recalculation
@@ -53,9 +65,10 @@ void Game::run(LevelManager& levelManager) {
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed){
                 window.close();
-
+                return;
+            }
             // Player movement with cooldown
             if (event.type == sf::Event::KeyPressed) {
                 if (PlayerClock.getElapsedTime().asMilliseconds() >= PlayerMoveCooldown) {
@@ -66,8 +79,18 @@ void Game::run(LevelManager& levelManager) {
 
                     PlayerClock.restart();
                     pathNeedsUpdate = true; // Recalculate path when the player moves
+                } 
+            }
+            
+            if (event.type == sf::Event::MouseButtonPressed &&event.mouseButton.button == sf::Mouse::Left){
+                if (HomeButton.isPressed(window)){
+                    Home mainMenu(window);  // Create a new instance of the main menu
+                    mainMenu.run(levelManager); // Run the main menu
+                    window.close();
+                    return;
                 }
             }
+            HomeButton.update(window);
         }
 
         goal = player.GetPlayerPosition(); // Update player position
@@ -80,17 +103,6 @@ void Game::run(LevelManager& levelManager) {
             return;
         }
     }
-        // if (start == goal) {
-        //     std::cout << "Enemy found the Player!" << std::endl;
-            
-        //     // Immediately stop the game
-        //     window.clear(sf::Color::Black);
-        //     window.display();
-        //     sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
-        //     window.close(); // Close the game window
-        //     showGameOverPopup(levelManager); // Show the "Game Over" popup
-        //     return; // Exit the game loop and end the game
-        // }
           if (goal == exit) {
             std::cout << "Player found the exit!" << std::endl;
             int currentLevel = levelManager.getCurrentLevel();
@@ -135,18 +147,6 @@ void Game::run(LevelManager& levelManager) {
                 }
             }
         }
-     
-        // // Enemy movement with cooldown
-        // if (maze.getIsGenerated()) { // Ensure the maze is generated
-        //     if (EnemyClock.getElapsedTime().asMilliseconds() >= EnemyMoveCooldown) {
-        //         if (!path.empty()) {
-        //             sf::Vector2i nextStep = path.front(); // Get next position from A* path
-        //             enemy.setPosition(nextStep);         // Move enemy
-        //             path.erase(path.begin());            // Remove step from path
-        //         }
-        //         EnemyClock.restart();
-        //     }
-        // }
 
         // Clear window and draw everything
         window.clear(sf::Color::Black);
@@ -165,7 +165,7 @@ void Game::run(LevelManager& levelManager) {
             }
             escapeDoor.draw(window); // Draw escape door
         }
-
+        HomeButton.render(window);
         window.display();
     }
 }
