@@ -8,6 +8,8 @@ class Game {
 public:
     Game(sf::RenderWindow& window); // Constructor to initialize the game with a window
     void run(LevelManager& levelManager); // Method to start the game loop
+ 
+
 private:
     sf::RenderWindow& window; // Reference to the main game window
 };

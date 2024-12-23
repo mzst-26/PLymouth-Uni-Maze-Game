@@ -36,7 +36,8 @@ void Game::run(LevelManager& levelManager){
     Player player(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
     // Enemy enemy(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
     EscapeDoor escapeDoor(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
-    
+
+    WinOrLoose winOrLoose;
     // Create multiple enemies
     for (int i = 0; i < enemyAmount; ++i) {
         sf::Vector2i randomPosition(rand() % mazeWidth, rand() % mazeHeight);
@@ -98,8 +99,7 @@ void Game::run(LevelManager& levelManager){
          for (size_t i = 0; i < enemies.size(); ++i) {
         if (enemies[i].GetEnemyPosition() == goal) {
             std::cout << "Enemy " << i << " found the Player!" << std::endl;
-            window.close();
-            showGameOverPopup(levelManager);
+            winOrLoose.showGameOverPopup(levelManager, window);
             return;
         }
     }
@@ -113,9 +113,7 @@ void Game::run(LevelManager& levelManager){
             sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
             // Update maze
             maze.update();
-
-            window.close(); // Close the game window
-            showLuckyDayPopup(levelManager); // Show the "Lucky Day" popup
+            winOrLoose.showLuckyDayPopup(levelManager, window); // Show the "Lucky Day" popup
             return; // Exit the game loop and end the game
         }
 

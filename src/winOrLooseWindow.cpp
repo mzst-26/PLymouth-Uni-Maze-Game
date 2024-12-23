@@ -4,10 +4,10 @@
 #include "../include/button.h"
 #include "../include/game.h"
 #include "../include/levelManager.h"
-// Function to create a popup window
-void createWinOrLoosePopupWindow(const std::string& message, const sf::Color& bgColor, LevelManager& levelManager) {
-    // Create a window
-    sf::RenderWindow window(sf::VideoMode(400, 200), "Maze Game", sf::Style::Titlebar | sf::Style::Close);
+// Function to create a popup popupWindow
+void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const sf::Color& bgColor, LevelManager& levelManager, sf::RenderWindow& window) {
+    // Create a popupWindow
+    sf::RenderWindow popupWindow(sf::VideoMode(400, 200), "Maze Game", sf::Style::Titlebar | sf::Style::Close);
     //initialise the buttons to move on if the player wins or restart if player looses
     int restartPosition;
     if (message != "Game Over"){
@@ -15,8 +15,8 @@ void createWinOrLoosePopupWindow(const std::string& message, const sf::Color& bg
     }else{
         restartPosition = 168;
     }
-    Button nextlevel(sf::Vector2f(132, 131), "NextLevel"); // Center of the window with text "Start"
-    Button restart(sf::Vector2f(restartPosition, 131), "Restart"); // Center of the window with text "Start"
+    Button nextlevel(sf::Vector2f(132, 131), "NextLevel"); // Center of the popupWindow with text "Start"
+    Button restart(sf::Vector2f(restartPosition, 131), "Restart"); // Center of the popupWindow with text "Start"
     //set their scale
     nextlevel.setScale(sf::Vector2f(1, 1));
     restart.setScale(sf::Vector2f(1, 1));
@@ -41,59 +41,55 @@ void createWinOrLoosePopupWindow(const std::string& message, const sf::Color& bg
     text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
     text.setPosition(200, 100);
 
-    // Run the window loop
-    while (window.isOpen()) {
+    // Run the popupWindow loop
+    while (popupWindow.isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (popupWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                window.close();
+                popupWindow.close();
             }
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
-                if (restart.isPressed(window)){
+                if (restart.isPressed(popupWindow)){
                     // Restart the game
-                    window.close();
+                    popupWindow.close();
                     Game game(window); // Create a Game object
                     game.run(levelManager); // Call the run method to start the game
-                    window.close();
-                    window.close();
                     return;
                 }
-                if (nextlevel.isPressed(window)){
+                if (nextlevel.isPressed(popupWindow)){
                     // Restart the game
-                    window.close();
+                    popupWindow.close();
                     Game game(window); // Create a Game object
                     game.run(levelManager); // Call the run method to start the game
-                    window.close();
-                    window.close();
                     return;
                 }
             }
         }
 
         // Clear and redraw
-        window.clear(bgColor);
-        window.draw(text);
+        popupWindow.clear(bgColor);
+        popupWindow.draw(text);
        
 
         // Update button states
         if(message == "Lucky Day for You"){
-            nextlevel.update(window);
-            nextlevel.render(window);
+            nextlevel.update(popupWindow);
+            nextlevel.render(popupWindow);
         }
        
-        restart.update(window);
-        restart.render(window);
+        restart.update(popupWindow);
+        restart.render(popupWindow);
 
-         window.display();
+         popupWindow.display();
     }
 }
 
 // Function to display the "Game Over" popup
-void showGameOverPopup(LevelManager& levelManager) {
-    createWinOrLoosePopupWindow("Game Over", sf::Color::Red, levelManager);
+void WinOrLoose::showGameOverPopup(LevelManager& levelManager, sf::RenderWindow& window) {
+    createWinOrLoosePopupWindow("Game Over", sf::Color::Red, levelManager, window);
 }
 
 // Function to display the "Lucky Day for You" popup
-void showLuckyDayPopup(LevelManager& levelManager) {
-    createWinOrLoosePopupWindow("Lucky Day for You", sf::Color::Green, levelManager);
+void WinOrLoose::showLuckyDayPopup(LevelManager& levelManager, sf::RenderWindow& window) {
+    createWinOrLoosePopupWindow("Lucky Day for You", sf::Color::Green, levelManager, window);
 }
