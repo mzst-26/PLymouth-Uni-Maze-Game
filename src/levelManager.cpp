@@ -11,7 +11,8 @@ LevelManager::LevelManager()
       enemySpeed(500),
       mazeWallRemovalAmount(8),
       userScore(0),
-      stars(0){
+      stars(0),
+      timeLimit(2){
 // Initialize maze dimensions
  adjustMazeDimensions();
 }
@@ -83,10 +84,12 @@ void LevelManager::resetLevelState() {
 int LevelManager::getEnemyGenerateAmount() const{
      return amountOfenemy;
 }
-int LevelManager::getEnemySpeed() const{
+int LevelManager::getEnemySpeed() const
+{
      return enemySpeed;
 }
-int LevelManager::getMazeWallRemovalAmount() const{
+int LevelManager::getMazeWallRemovalAmount() const
+{
      return mazeWallRemovalAmount;
 }
 
@@ -94,8 +97,13 @@ std::string LevelManager::getUserScore() const
 {
     return std::to_string(userScore);
 }
-int LevelManager::getGameStars() const{
+int LevelManager::getGameStars() const
+{
      return stars;
+}
+int LevelManager::getTimerLimit() const
+{
+     return timeLimit;
 }
 void LevelManager::update()
 {

@@ -22,6 +22,7 @@ class LevelManager {
     int getMazeWallRemovalAmount() const;
     std::string getUserScore() const;
     int getGameStars() const;
+    int getTimerLimit() const;
     
 
     private:

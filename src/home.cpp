@@ -81,7 +81,7 @@ void Home::update(LevelManager& levelManager) {
             fadeRect.setFillColor(fadeColor);
         } else if (loadingClock.getElapsedTime().asSeconds() >= 2.0f) {
             Game game(window);
-            game.run(levelManager); // Run the game
+            game.run(levelManager, levelManager.getTimerLimit()); // Run the game
             return;                 // Exit the home menu
         }
     }

@@ -8,6 +8,7 @@
 #include "../include/levelManager.h"
 #include "../include/winOrLoosePopup.h"
 #include "../include/home.h"
+#include "../include/modules.h"
 
 Game::Game(sf::RenderWindow& window)
     : window(window) // Initialize the window reference
@@ -15,7 +16,7 @@ Game::Game(sf::RenderWindow& window)
     // Additional initialization if necessary
 }
 
-void Game::run(LevelManager& levelManager){
+void Game::run(LevelManager& levelManager, int timeLimitMinutes){
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
     // Create a render window
     // sf::RenderWindow window(sf::VideoMode(1200, 800), "Mystery Maze");
@@ -28,16 +29,19 @@ void Game::run(LevelManager& levelManager){
     int mazeHeight = levelManager.getMazeHeight();
     int enemySpeed = levelManager.getEnemySpeed();
     int enemyAmount = levelManager.getEnemyGenerateAmount();
+    
     std::vector<Enemy> enemies; // Vector to hold multiple enemies
     // Create a Maze object
     Maze maze(mazeWidth, mazeHeight, 30, 0, 0);
     
     // Create Player and Enemy objects
     Player player(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
-    // Enemy enemy(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
-    EscapeDoor escapeDoor(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
 
+    EscapeDoor escapeDoor(30, sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight));
+    //win or loose
     WinOrLoose winOrLoose;
+    //Modules
+    Modules Module;
     // Create multiple enemies
     for (int i = 0; i < enemyAmount; ++i) {
         sf::Vector2i randomPosition(rand() % mazeWidth, rand() % mazeHeight);
@@ -57,19 +61,35 @@ void Game::run(LevelManager& levelManager){
     // Movement cooldowns
     const int PlayerMoveCooldown = 50; // Player cooldown in milliseconds
     sf::Clock PlayerClock;
-
+    //enemy speed
     const int EnemyMoveCooldown = enemySpeed; // Enemy cooldown in milliseconds
     std::vector<sf::Clock> enemyClocks(enemyAmount); // Separate clock for each enemy
+
+    //timer for the game
+    sf::Clock gameClock; // Clock to track the elapsed time
+    int timeLimitSeconds = timeLimitMinutes * 60; // convert min to sec
 
 
     // Main game loop
     while (window.isOpen()) {
+        //calculate the remaining time
+        int elapsedTime = gameClock.getElapsedTime().asSeconds(); // Time since the game started
+        int remainingTime = timeLimitSeconds - elapsedTime;       // Time left
+        //when time ends, player looses
+        if (remainingTime <= 0) {
+            std::cout << "Time's up! Player loses.\n";
+            winOrLoose.showGameOverPopup(levelManager, window);
+            return;
+        }
+
+
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed){
                 window.close();
                 return;
             }
+
             // Player movement with cooldown
             if (event.type == sf::Event::KeyPressed) {
                 if (PlayerClock.getElapsedTime().asMilliseconds() >= PlayerMoveCooldown) {
@@ -92,6 +112,7 @@ void Game::run(LevelManager& levelManager){
                 }
             }
             HomeButton.update(window);
+            
         }
 
         goal = player.GetPlayerPosition(); // Update player position
@@ -105,8 +126,6 @@ void Game::run(LevelManager& levelManager){
     }
           if (goal == exit) {
             std::cout << "Player found the exit!" << std::endl;
-            int currentLevel = levelManager.getCurrentLevel();
-            levelManager.loadLevel(currentLevel + 1);
             // Immediately stop the game
             window.clear(sf::Color::Black);
             window.display();
@@ -164,6 +183,19 @@ void Game::run(LevelManager& levelManager){
             escapeDoor.draw(window); // Draw escape door
         }
         HomeButton.render(window);
+        // Display the time remaining
+            sf::Text timerText;
+            sf::Font font;
+            if (font.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/fonts/font.ttf")) { // Replace with your font path
+                timerText.setFont(font);
+                timerText.setCharacterSize(20);
+                //display the timer in the right format 00:00
+                timerText.setString(Module.formatTime(remainingTime));
+                timerText.setFillColor(sf::Color::Red);
+                timerText.setPosition(1100, 10); // Adjust position as needed
+                window.draw(timerText);
+
+            }
         window.display();
     }
 }
