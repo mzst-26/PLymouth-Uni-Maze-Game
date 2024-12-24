@@ -4,19 +4,41 @@
 #include "../include/button.h"
 #include "../include/game.h"
 #include "../include/levelManager.h"
+#include "../include/star.h"
+#include "../include/scoreBoard.h"
 // Function to create a popup popupWindow
 void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const sf::Color& bgColor, LevelManager& levelManager, sf::RenderWindow& window) {
-    // Create a popupWindow
-    sf::RenderWindow popupWindow(sf::VideoMode(400, 200), "Maze Game", sf::Style::Titlebar | sf::Style::Close);
-    //initialise the buttons to move on if the player wins or restart if player looses
-    int restartPosition;
-    if (message != "Game Over"){
-        restartPosition = 202;
-    }else{
-        restartPosition = 168;
+    sf::Vector2u windowSize;
+    sf::Vector2f restartPosition;
+    int messagePosition = 300;
+    if (message == "Game Over") {
+        windowSize = sf::Vector2u(400, 200);
+        restartPosition =sf::Vector2f(168, 131);
+        messagePosition -= 200;
+    } else {
+        windowSize = sf::Vector2u(400, 500);
+        restartPosition =sf::Vector2f(202, 434);
     }
-    Button nextlevel(sf::Vector2f(132, 131), "NextLevel"); // Center of the popupWindow with text "Start"
-    Button restart(sf::Vector2f(restartPosition, 131), "Restart"); // Center of the popupWindow with text "Start"
+
+    // Create the popup window
+    sf::RenderWindow popupWindow(sf::VideoMode(windowSize.x, windowSize.y), "Maze Game", sf::Style::Titlebar | sf::Style::Close);
+
+    std::string rewardAmount = "10000";
+
+    //Create Scoreboard
+    ScoreBoard scoreBoard(sf::Vector2f(45, 140), "Board", rewardAmount);
+
+    //initialise Stars
+    Star oneStar(sf::Vector2f(115,25), "Star");
+    Star twoStar(sf::Vector2f(167,10), "Star");
+    Star threeStar(sf::Vector2f(232,25), "Star");
+        oneStar.setScale(sf::Vector2f(0.4f,0.4f));
+        twoStar.setScale(sf::Vector2f(0.5f,0.5f));
+        threeStar.setScale(sf::Vector2f(0.4f,0.4f));
+    
+    //initialise the buttons to move on if the player wins or restart if player looses
+    Button nextlevel(sf::Vector2f(132, 434), "NextLevel"); // Center of the popupWindow with text "Start"
+    Button restart(sf::Vector2f(restartPosition), "Restart"); // Center of the popupWindow with text "Start"
     //set their scale
     nextlevel.setScale(sf::Vector2f(1, 1));
     restart.setScale(sf::Vector2f(1, 1));
@@ -39,7 +61,7 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
     // Center the text
     sf::FloatRect textRect = text.getLocalBounds();
     text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-    text.setPosition(200, 100);
+    text.setPosition(200, messagePosition);
 
     // Run the popupWindow loop
     while (popupWindow.isOpen()) {
@@ -75,11 +97,18 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
         if(message == "Lucky Day for You"){
             nextlevel.update(popupWindow);
             nextlevel.render(popupWindow);
+            // Draw stars
+            oneStar.setActive("Active");
+            oneStar.render(popupWindow);
+            twoStar.render(popupWindow);
+            threeStar.render(popupWindow);
+            scoreBoard.render(popupWindow);
         }
        
         restart.update(popupWindow);
         restart.render(popupWindow);
-
+       
+    
          popupWindow.display();
     }
 }
