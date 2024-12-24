@@ -22,7 +22,7 @@ Star::Star(sf::Vector2f position, const std::string& text) {
 Star::~Star() {}
 
 // Activate or deactivate the star
-void Star::setActive(bool active) {
+void Star::setActive() {
     starState = ACTIVE ;
     starShape.setTexture(texActive);
 }

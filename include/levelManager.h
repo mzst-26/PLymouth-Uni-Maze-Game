@@ -20,17 +20,22 @@ class LevelManager {
     int getEnemyGenerateAmount() const;
     int getEnemySpeed()const;
     int getMazeWallRemovalAmount() const;
+    std::string getUserScore() const;
+    int getGameStars() const;
     
 
     private:
     // Private members and methods go here
     int currentLevel{1};
     std::string difficulty;
-    int mazeWidth;                 // Maze width based on difficulty
-    int mazeHeight; 
-    int amountOfenemy;
-    int enemySpeed;
-    int mazeWallRemovalAmount;
+    int mazeWidth;   // Maze width based on difficulty
+    int mazeHeight; // Maze height based on difficulty
+    int amountOfenemy; //number of enemies
+    int enemySpeed;//speed of enemy
+    int mazeWallRemovalAmount; // number of walls that need to be removed to make the navigation easier in game
+    int userScore;//user score in integer
+    int stars; //number of stars from 1 to 3
+    int timeLimit; //in min
     void adjustMazeDimensions();   // Adjust maze dimensions based on difficulty and level
     void resetLevelState();  
      // Create an instance of SettingsPopup  

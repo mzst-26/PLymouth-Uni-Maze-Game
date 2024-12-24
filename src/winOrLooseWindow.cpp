@@ -23,8 +23,9 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
     // Create the popup window
     sf::RenderWindow popupWindow(sf::VideoMode(windowSize.x, windowSize.y), "Maze Game", sf::Style::Titlebar | sf::Style::Close);
 
-    std::string rewardAmount = "10000";
-
+    std::string rewardAmount = levelManager.getUserScore();
+    std::string currentLevel = std::to_string(levelManager.getCurrentLevel());
+    int gameStars = levelManager.getGameStars();
     //Create Scoreboard
     ScoreBoard scoreBoard(sf::Vector2f(45, 140), "Board", rewardAmount);
 
@@ -32,9 +33,10 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
     Star oneStar(sf::Vector2f(115,25), "Star");
     Star twoStar(sf::Vector2f(167,10), "Star");
     Star threeStar(sf::Vector2f(232,25), "Star");
-        oneStar.setScale(sf::Vector2f(0.4f,0.4f));
-        twoStar.setScale(sf::Vector2f(0.5f,0.5f));
-        threeStar.setScale(sf::Vector2f(0.4f,0.4f));
+    //set their scale
+    oneStar.setScale(sf::Vector2f(0.4f,0.4f));
+    twoStar.setScale(sf::Vector2f(0.5f,0.5f));
+    threeStar.setScale(sf::Vector2f(0.4f,0.4f));
     
     //initialise the buttons to move on if the player wins or restart if player looses
     Button nextlevel(sf::Vector2f(132, 434), "NextLevel"); // Center of the popupWindow with text "Start"
@@ -57,6 +59,16 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
     text.setCharacterSize(24);
     text.setFillColor(sf::Color::White);
     text.setStyle(sf::Text::Bold);
+    //set up level visualiser in text
+    sf::Text levelText;
+    levelText.setFont(font);
+    levelText.setString("Level: " + currentLevel);
+    levelText.setCharacterSize(18);
+    levelText.setFillColor(sf::Color::White);
+    levelText.setStyle(sf::Text::Bold);
+    levelText.setPosition(170, 100);
+    // Set up star visualiser
+    sf::Sprite starSprite;
 
     // Center the text
     sf::FloatRect textRect = text.getLocalBounds();
@@ -88,9 +100,24 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
             }
         }
 
+             //set their state based on the level manage getGameStar
+        for(int i = 0; i < gameStars; i++) {
+            if(i == 0) {
+                oneStar.setActive();
+            } else if(i == 1) {
+                oneStar.setActive();
+                twoStar.setActive();
+            } else if(i == 2) {
+                oneStar.setActive();
+                twoStar.setActive();
+                threeStar.setActive();
+            }
+        }
+
         // Clear and redraw
         popupWindow.clear(bgColor);
         popupWindow.draw(text);
+        popupWindow.draw(levelText);
        
 
         // Update button states
@@ -98,7 +125,6 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
             nextlevel.update(popupWindow);
             nextlevel.render(popupWindow);
             // Draw stars
-            oneStar.setActive("Active");
             oneStar.render(popupWindow);
             twoStar.render(popupWindow);
             threeStar.render(popupWindow);

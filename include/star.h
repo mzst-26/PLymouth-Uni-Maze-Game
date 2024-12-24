@@ -17,7 +17,7 @@ public:
     ~Star();
 
     // Methods
-    void setActive(bool active);           // Toggle star state
+    void setActive();           // Toggle star state
     bool isActive() const;                 // Check if the star is active
     void render(sf::RenderTarget& target); // Render the star
     void setScale(const sf::Vector2f& scale); // Set the star's scale

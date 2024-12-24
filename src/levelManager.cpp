@@ -2,8 +2,6 @@
 #include <iostream>
 #include "../include/game.h"
 
-
-
 LevelManager::LevelManager()
     : currentLevel(1), 
       difficulty("Easy"), // Use the instance
@@ -11,7 +9,9 @@ LevelManager::LevelManager()
       mazeHeight(8),
       amountOfenemy(1),
       enemySpeed(500),
-      mazeWallRemovalAmount(8){
+      mazeWallRemovalAmount(8),
+      userScore(0),
+      stars(0){
 // Initialize maze dimensions
  adjustMazeDimensions();
 }
@@ -38,6 +38,7 @@ void LevelManager::adjustMazeDimensions() {
     if (difficulty == "Easy" && currentLevel <=3 ) {
         mazeWidth = 10 + currentLevel * 2;  // Easy: Small maze grows slowly
         mazeHeight = 8 + currentLevel * 2;
+        stars = 1;
         std::cout<<"Easy number 1";
     }else if (difficulty == "Easy" && currentLevel > 3 ) {
         amountOfenemy = 2;
@@ -89,10 +90,17 @@ int LevelManager::getMazeWallRemovalAmount() const{
      return mazeWallRemovalAmount;
 }
 
-void LevelManager::update() {
+std::string LevelManager::getUserScore() const
+{
+    return std::to_string(userScore);
+}
+int LevelManager::getGameStars() const{
+     return stars;
+}
+void LevelManager::update()
+{
     // Update level-specific logic here
 }
-
 
 void LevelManager::render(sf::RenderWindow& window) {
     // Render the current level here
