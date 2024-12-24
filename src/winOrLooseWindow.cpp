@@ -24,7 +24,7 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
     sf::RenderWindow popupWindow(sf::VideoMode(windowSize.x, windowSize.y), "Maze Game", sf::Style::Titlebar | sf::Style::Close);
 
     std::string rewardAmount = levelManager.getUserScore();
-    std::string currentLevel = std::to_string(levelManager.getCurrentLevel());
+    int currentLevel = levelManager.getCurrentLevel();
     int gameStars = levelManager.getGameStars();
     //Create Scoreboard
     ScoreBoard scoreBoard(sf::Vector2f(45, 140), "Board", rewardAmount);
@@ -59,14 +59,20 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
     text.setCharacterSize(24);
     text.setFillColor(sf::Color::White);
     text.setStyle(sf::Text::Bold);
+
     //set up level visualiser in text
     sf::Text levelText;
     levelText.setFont(font);
-    levelText.setString("Level: " + currentLevel);
     levelText.setCharacterSize(18);
     levelText.setFillColor(sf::Color::White);
     levelText.setStyle(sf::Text::Bold);
     levelText.setPosition(170, 100);
+    if (message != "Game Over"){
+        levelText.setString("Level: " + std::to_string(currentLevel + 1) );
+    }else{
+                levelText.setString("Level: " + std::to_string(currentLevel) );
+    }
+
     // Set up star visualiser
     sf::Sprite starSprite;
 
@@ -87,14 +93,16 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
                     // Restart the game
                     popupWindow.close();
                     Game game(window); // Create a Game object
-                    game.run(levelManager); // Call the run method to start the game
+                    game.run(levelManager, levelManager.getTimerLimit()); // Call the run method to start the game
                     return;
                 }
                 if (nextlevel.isPressed(popupWindow)){
-                    // Restart the game
+                    // Move to the next level
+                    int currentLevel = levelManager.getCurrentLevel();
+                    levelManager.loadLevel(currentLevel + 1);
                     popupWindow.close();
                     Game game(window); // Create a Game object
-                    game.run(levelManager); // Call the run method to start the game
+                    game.run(levelManager, levelManager.getTimerLimit()); // Call the run method to start the game
                     return;
                 }
             }
