@@ -128,25 +128,25 @@ void Maze::draw(sf::RenderWindow &window) {
             // Draw walls
             if (cell->top) {
                 sf::RectangleShape line(sf::Vector2f(cell_size, 1));
-                line.setFillColor(sf::Color::White);
+                line.setFillColor(sf::Color::Blue);
                 line.setPosition(gx, gy);
                 window.draw(line);
             }
             if (cell->bottom) {
                 sf::RectangleShape line(sf::Vector2f(cell_size, 1));
-                line.setFillColor(sf::Color::White);
+                line.setFillColor(sf::Color::Blue);
                 line.setPosition(gx, gy + cell_size - 1);
                 window.draw(line);
             }
             if (cell->left) {
                 sf::RectangleShape line(sf::Vector2f(1, cell_size));
-                line.setFillColor(sf::Color::White);
+                line.setFillColor(sf::Color::Blue);
                 line.setPosition(gx, gy);
                 window.draw(line);
             }
             if (cell->right) {
                 sf::RectangleShape line(sf::Vector2f(1, cell_size));
-                line.setFillColor(sf::Color::White);
+                line.setFillColor(sf::Color::Blue);
                 line.setPosition(gx + cell_size - 1, gy);
                 window.draw(line);
             }
