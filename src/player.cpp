@@ -32,7 +32,7 @@ void Player::loadTextures() {
         for (int i = 1; i <= 3; ++i) { // Assuming 3 frames per direction
             sf::Texture texture;
             // Load the texture from file
-            if (texture.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/Player/player_" + dir + std::to_string(i) + ".png")) {
+            if (texture.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Player/player_" + dir + std::to_string(i) + ".png")) {
                 textures[dir].push_back(texture);
             } else {
                 // Log an error if the texture fails to load
