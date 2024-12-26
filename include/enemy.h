@@ -1,25 +1,35 @@
-#ifndef INCLUDE_ENEMY_H_
-#define INCLUDE_ENEMY_H_
+#ifndef ENEMY_H
+#define ENEMY_H
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 class Enemy {
 public:
-    // Constructor to initialize the enemy with a cell size and starting position
+    // Constructor: Initializes the enemy with a random texture and a start position
     Enemy(int cell_size, sf::Vector2i start_position);
 
-    // Function to draw the enemy on the window
+    // Draw the enemy sprite on the window
     void draw(sf::RenderWindow &window);
 
-    // Getter for the enemy's current position
+    // Get the enemy's current position
     sf::Vector2i GetEnemyPosition() const;
 
-    // Setter to update the enemy's position
+    // Set a new position for the enemy
     void setPosition(sf::Vector2i new_position);
 
 private:
-    sf::Vector2i position;      // Current position of the enemy
-    sf::RectangleShape shape;   // Graphical representation of the enemy
+    // Position of the enemy in the grid
+    sf::Vector2i position;
+
+    // Sprite to represent the enemy
+    sf::Sprite sprite;
+
+    // A vector to store all loaded textures
+    std::vector<sf::Texture> textures;
+
+    // Load all enemy textures
+    void loadTextures();
 };
 
-#endif // INCLUDE_ENEMY_H_
+#endif // ENEMY_H
