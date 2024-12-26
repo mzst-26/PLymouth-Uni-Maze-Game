@@ -81,6 +81,7 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
     sf::Clock gameClock; // Clock to track the elapsed time
     int timeLimitSeconds = timeLimitMinutes * 60; // convert min to sec
 
+    sf::Clock PlayerAnimationCoolDown;
 
     // Main game loop
     while (window.isOpen()) {
@@ -105,10 +106,11 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
             // Player movement with cooldown
             if (event.type == sf::Event::KeyPressed) {
                 if (PlayerClock.getElapsedTime().asMilliseconds() >= PlayerMoveCooldown) {
-                    if (event.key.code == sf::Keyboard::W) player.move(sf::Vector2i(0, -1), maze); // Move up
-                    if (event.key.code == sf::Keyboard::S) player.move(sf::Vector2i(0, 1), maze);  // Move down
-                    if (event.key.code == sf::Keyboard::A) player.move(sf::Vector2i(-1, 0), maze); // Move left
-                    if (event.key.code == sf::Keyboard::D) player.move(sf::Vector2i(1, 0), maze);  // Move right
+            if (event.key.code == sf::Keyboard::W) player.move(sf::Vector2i(0, -1), maze); // Move up
+            if (event.key.code == sf::Keyboard::S) player.move(sf::Vector2i(0, 1), maze);  // Move down
+            if (event.key.code == sf::Keyboard::A) player.move(sf::Vector2i(-1, 0), maze); // Move left
+            if (event.key.code == sf::Keyboard::D) player.move(sf::Vector2i(1, 0), maze);  // Move right
+
 
                     PlayerClock.restart();
                     pathNeedsUpdate = true; // Recalculate path when the player moves
@@ -190,6 +192,7 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
         
         maze.draw(window);     // Draw maze
         if (maze.getIsGenerated()) {
+            sf::Time deltaTime = PlayerAnimationCoolDown.restart();
             if (maze.allCellsVisited() && !maze.isWallsRemoved()){
             // Create additional exits and remove some walls randomly
             int additionalExits = 8; // Number of additional exits to create
@@ -198,6 +201,7 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
              }
             escapeDoor.draw(window); // Draw escape door
             player.draw(window); // Draw player
+            player.update(deltaTime.asSeconds());
             for (auto& enemy : enemies) {
                 enemy.draw(window); // Draw each enemy
             }
