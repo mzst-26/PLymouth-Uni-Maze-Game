@@ -17,7 +17,6 @@ Button::Button(sf::Vector2f position, const std::string& text) {
     }else{
         buttonShape.setScale(0.2f, 0.2f);
     }
-
     //load the font and add error handeling
     try{
     if (font.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/fonts/font.ttf"))

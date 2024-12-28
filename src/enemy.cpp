@@ -26,7 +26,7 @@ Enemy::Enemy(int cell_size, sf::Vector2i start_position)
     sprite.setScale(scaleX, scaleY);
 
     // Center the sprite in the cell
-    float centerOffset = (cell_size - (sprite.getGlobalBounds().width)) / 2.f;
+    float centerOffset = (cell_size - sprite.getGlobalBounds().width) / 2.f;
     sprite.setPosition(position.x * cell_size + centerOffset, position.y * cell_size + centerOffset);
 }
 
@@ -60,9 +60,19 @@ sf::Vector2i Enemy::GetEnemyPosition() const {
 }
 
 void Enemy::setPosition(sf::Vector2i new_position) {
-    position = new_position;
+    if (!stopped) {
+        position = new_position;
 
-    // Update sprite position to center it in the cell
-    float centerOffset = (sprite.getGlobalBounds().width - sprite.getGlobalBounds().height) / 2.f;
-    sprite.setPosition(position.x * sprite.getGlobalBounds().width + centerOffset, position.y * sprite.getGlobalBounds().height + centerOffset);
+        // Update sprite position to center it in the cell
+        float centerOffset = (sprite.getGlobalBounds().width - sprite.getGlobalBounds().height) / 2.f;
+        sprite.setPosition(position.x * sprite.getGlobalBounds().width + centerOffset, position.y * sprite.getGlobalBounds().height + centerOffset);
+    }
+}
+
+void Enemy::stop() {
+    stopped = true; // Stop enemy movement
+}
+
+void Enemy::resume() {
+    stopped = false; // Resume enemy movement
 }

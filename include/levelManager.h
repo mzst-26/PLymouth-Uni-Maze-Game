@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+class SettingsPopup;
 class LevelManager {
     public:   
 
@@ -23,7 +24,7 @@ class LevelManager {
     std::string getUserScore() const;
     int getGameStars() const;
     int getTimerLimit() const;
-    
+   
 
     private:
     // Private members and methods go here
@@ -39,7 +40,9 @@ class LevelManager {
     int timeLimit; //in min
     void adjustMazeDimensions();   // Adjust maze dimensions based on difficulty and level
     void resetLevelState();  
-     // Create an instance of SettingsPopup  
+     // Create an instance of SettingsPopup 
+
+
 };
 
 

@@ -39,6 +39,8 @@ void LevelManager::adjustMazeDimensions() {
     if (difficulty == "Easy" && currentLevel <=3 ) {
         mazeWidth = 10 + currentLevel * 2;  // Easy: Small maze grows slowly
         mazeHeight = 8 + currentLevel * 2;
+        amountOfenemy = 1;
+        mazeWallRemovalAmount = 8;
         stars = 1;
         std::cout<<"Easy number 1";
     }else if (difficulty == "Easy" && currentLevel > 3 ) {
@@ -81,8 +83,18 @@ void LevelManager::resetLevelState() {
     // Reset variables for the new level
     std::cout << "Resetting level-specific state..." << std::endl;
 }
-int LevelManager::getEnemyGenerateAmount() const{
-     return amountOfenemy;
+int LevelManager::getEnemyGenerateAmount() const {
+    // Check the current difficulty and return the appropriate amount of enemies
+    if (difficulty == "Easy") {
+        return (currentLevel <= 3) ? 1 : 2; // 1 enemy for levels 1-3, 2 for levels 4+
+    } else if (difficulty == "Medium") {
+        return (currentLevel <= 3) ? 2 : 3; // 2 enemies for levels 1-3, 3 for levels 4+
+    } else if (difficulty == "Hard") {
+        return (currentLevel <= 3) ? 3 : 4; // 3 enemies for levels 1-3, 4 for levels 4+
+    } else {
+        std::cout << "Invalid difficulty level. Returning default value." << std::endl;
+        return 1; // Default value if difficulty is invalid
+    }
 }
 int LevelManager::getEnemySpeed() const
 {

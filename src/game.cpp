@@ -82,6 +82,10 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
     int timeLimitSeconds = timeLimitMinutes * 60; // convert min to sec
 
     sf::Clock PlayerAnimationCoolDown;
+    
+    // Enemy vounrability
+     Timer timer;
+
 
     // Main game loop
     while (window.isOpen()) {
@@ -94,7 +98,6 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
             winOrLoose.showGameOverPopup(levelManager, window);
             return;
         }
-
 
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -138,8 +141,18 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
             winOrLoose.showGameOverPopup(levelManager, window);
             return;
         }
+
         for(size_t i = 0; i < apples.size(); ++i){
             if (apples[i].GetApplesPosition() == goal){
+                   //stop the enemies
+                for (size_t i = 0; i < enemies.size(); ++i){
+                 if (enemies[i].GetEnemyPosition()!= goal) {
+                    enemies[i].stop();
+                    timer.start(8);
+                    std::cout << "Enemy " << i << " STOPED!" << std::endl;
+                    
+                 }
+             }
                 std::cout << "Player found an apple!" << std::endl;
                 apples.erase(apples.begin() + i); // Remove the found apple from the list
                 break;
@@ -184,6 +197,15 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
                     }
                     enemyClocks[i].restart();
                 }
+            }
+        }
+               //enemy timer
+        // Check if the timer has expired
+        if (timer.check()) {
+            std::cout << "Timer expired! Action triggered.\n";
+            // Resume the enemies
+            for (size_t i = 0; i < enemies.size(); ++i) {
+                enemies[i].resume();
             }
         }
 
