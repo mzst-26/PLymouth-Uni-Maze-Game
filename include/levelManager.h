@@ -24,6 +24,19 @@ class LevelManager {
     std::string getUserScore() const;
     int getGameStars() const;
     int getTimerLimit() const;
+
+    // Game state variables
+    sf::Vector2i savedPlayerPosition;
+    std::vector<sf::Vector2i> savedEnemyPositions;
+    std::vector<sf::Vector2i> savedApplesPositions;
+    int savedRemainingTime;
+    bool isGameSaved = false;
+
+    // File path for saving game state
+    std::string saveFilePath;
+    // Methods to save and load game state
+    void saveGameState(const sf::Vector2i& playerPos, const sf::Vector2i& exitPosition, const std::vector<sf::Vector2i>& enemyPositions, const std::vector<sf::Vector2i>& applesPositions, int remainingTime);
+    void loadGameState(sf::Vector2i& playerPos, sf::Vector2i& exitPosition, std::vector<sf::Vector2i>& enemyPositions, std::vector<sf::Vector2i>& applesPositions, int& remainingTime);
    
 
     private:

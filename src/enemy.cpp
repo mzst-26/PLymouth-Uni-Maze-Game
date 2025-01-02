@@ -62,7 +62,6 @@ sf::Vector2i Enemy::GetEnemyPosition() const {
 void Enemy::setPosition(sf::Vector2i new_position) {
     if (!stopped) {
         position = new_position;
-
         // Update sprite position to center it in the cell
         float centerOffset = (sprite.getGlobalBounds().width - sprite.getGlobalBounds().height) / 2.f;
         sprite.setPosition(position.x * sprite.getGlobalBounds().width + centerOffset, position.y * sprite.getGlobalBounds().height + centerOffset);

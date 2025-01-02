@@ -108,7 +108,7 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
                 if (nextLevel.isPressed(mainWindow)) {
                     popupActive = false;
                     levelManager.loadLevel(levelManager.getCurrentLevel() + 1); // Load next level
-                    Game game(mainWindow); // Create a Game object
+                    Game game(mainWindow, "NewGame"); // Create a Game object
                     game.run(levelManager, levelManager.getTimerLimit()); // Call the run method to start the game
                 }
             }

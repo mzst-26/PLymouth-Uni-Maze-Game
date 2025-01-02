@@ -29,6 +29,7 @@ private:
     bool loading;                            // Loading state
     bool showSettings;                       // Flag for settings popup visibility
     SettingsPopup settingsPopup;             // Settings popup
+    bool isResumed{false};                   //This would determin if the game is being resumed or not
 
     void handleEvents(LevelManager& levelManager);                     // Handle events
     void update(LevelManager& levelManager);                           // Update menu state

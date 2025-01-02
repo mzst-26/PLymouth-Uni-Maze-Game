@@ -11,7 +11,8 @@ Home::Home(sf::RenderWindow& window)
       fadeRect(sf::Vector2f(1200, 800)),
       settingsPopup(window),
       loading(false),
-      showSettings(false) {
+      showSettings(false),
+      isResumed{false}{
     // Load background texture
     if (!backgroundTexture.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Backgrounds/MazeImageBackground.png")) {
         std::cerr << "Error loading background image!" << std::endl;
@@ -49,10 +50,14 @@ void Home::handleEvents(LevelManager& levelManager) {
             if (playButton.isPressed(window)) {
                 loading = true;
                 loadingClock.restart();
+                isResumed = false;
             }
             if (resumeButton.isPressed(window)) {
                 std::cout << "Resume clicked\n";
-                // TODO: Implement resume logic
+                loading = true;
+                loadingClock.restart();
+                isResumed = true;
+
             }
             if (settingsButton.isPressed(window)) {
                 showSettings = !showSettings;
@@ -80,7 +85,7 @@ void Home::update(LevelManager& levelManager) {
             fadeColor.a += 5; // Fade effect
             fadeRect.setFillColor(fadeColor);
         } else if (loadingClock.getElapsedTime().asSeconds() >= 2.0f) {
-            Game game(window);
+            Game game(window, isResumed ?  "Resumed": "NewGame");
             game.run(levelManager, levelManager.getTimerLimit()); // Run the game
             return;                 // Exit the home menu
         }
