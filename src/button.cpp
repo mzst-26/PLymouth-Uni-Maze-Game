@@ -1,9 +1,11 @@
 #include "../include/button.h"
-
+#include <filesystem>
 // Constructor
 Button::Button(sf::Vector2f position, const std::string& text) {
     // Load textures for different status
-       std::string basePath = "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/";
+    // Get the current working directory
+        std::string currentDir = std::filesystem::current_path().string();
+       std::string basePath = currentDir + "/assets/Buttons/";
     if (!texIdle.loadFromFile(basePath + text + "Button.png") ||
         !texHover.loadFromFile(basePath + text + "HOP.png") ||
         !texPressed.loadFromFile(basePath + text + "HOP.png")) {
@@ -19,7 +21,7 @@ Button::Button(sf::Vector2f position, const std::string& text) {
     }
     //load the font and add error handeling
     try{
-    if (font.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/fonts/font.ttf"))
+    if (font.loadFromFile(currentDir + "/assets/fonts/font.ttf"))
     {
         // std::cerr << "Font Loaded" << std::endl; for debugging
         return;  // Early exit on error
@@ -41,14 +43,6 @@ Button::Button(sf::Vector2f position, const std::string& text) {
 
     buttonState = IDLE; // Initial state
 }
-// bool Button::setHighlighted(bool active, std::string text) {
-//     if (active) {
-//        texIdle.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/" + text + "HOP.png");
-//     } else {
-//        texPressed.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/"+ text +"Button.png");
-//     }
-
-// }
 
 // Destructor
 Button::~Button() {}

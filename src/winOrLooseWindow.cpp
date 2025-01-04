@@ -1,11 +1,8 @@
 #include <SFML/Graphics.hpp>
+#include <filesystem>
 #include <string>
 #include "../include/winOrLoosePopup.h"
-#include "../include/button.h"
-#include "../include/game.h"
-#include "../include/levelManager.h"
-#include "../include/star.h"
-#include "../include/scoreBoard.h"
+
 // Function to create a popup popupWindow
 void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const sf::Color& bgColor, LevelManager& levelManager, sf::RenderWindow& mainWindow) {
     //for dynamic size and position
@@ -65,7 +62,10 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
 
     // Font for text
     sf::Font font;
-    if (!font.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/fonts/font.ttf")) {
+    // Get the current working directory
+    std::string currentDir = std::filesystem::current_path().string();
+
+    if (!font.loadFromFile(currentDir + "/assets/fonts/font.ttf")) {
         return; // Return early if font loading fails
     }
 
@@ -103,10 +103,12 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 if (restart.isPressed(mainWindow)) {
                     popupActive = false;
-                    // levelManager.resetLevel(); // Reset the current level
+                    levelManager.setTimerLimit(120);
+                    
                 }
                 if (nextLevel.isPressed(mainWindow)) {
                     popupActive = false;
+                    levelManager.setTimerLimit(120);
                     levelManager.loadLevel(levelManager.getCurrentLevel() + 1); // Load next level
                     Game game(mainWindow, "NewGame"); // Create a Game object
                     game.run(levelManager, levelManager.getTimerLimit()); // Call the run method to start the game

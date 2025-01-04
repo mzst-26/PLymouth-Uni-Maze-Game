@@ -1,10 +1,14 @@
 #include "../include/scoreBoard.h"
+#include <filesystem>
 #include <iostream>
 
 // Constructor
 ScoreBoard::ScoreBoard(sf::Vector2f position, const std::string& fileName, const std::string& text) {
+    // Get the current working directory
+    std::string currentDir = std::filesystem::current_path().string();
+
     // Load textures for idle and active states
-    std::string basePath = "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/";
+    std::string basePath = currentDir + "/assets/Buttons/";
     if (!texIdle.loadFromFile(basePath + fileName + ".png") ||
         !texActive.loadFromFile(basePath + fileName + "HOP.png")) {
         std::cerr << "Error loading star textures!" << std::endl;
@@ -18,7 +22,7 @@ ScoreBoard::ScoreBoard(sf::Vector2f position, const std::string& fileName, const
 
     // Load the font and handle errors
     try {
-        if (!font.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/fonts/font.ttf")) {
+        if (!font.loadFromFile(currentDir + "/assets/fonts/font.ttf")) {
             throw std::runtime_error("Error loading font!");
         }
     } catch (std::exception& e) {

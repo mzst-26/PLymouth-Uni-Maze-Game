@@ -1,6 +1,6 @@
 #include "../include/apples.h"
 #include <iostream>
-
+#include <filesystem>
 
 // Define the static texture
 sf::Texture Apples::texture;
@@ -9,7 +9,8 @@ Apples::Apples(float size, sf::Vector2i position) : position(position) {
     // Load the texture once, if it hasn't been loaded already
     static bool isTextureLoaded = false;
     if (!isTextureLoaded) {
-        if (!texture.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/Apple.png")) {
+        std::string currentDir = std::filesystem::current_path().string();
+        if (!texture.loadFromFile(currentDir + "/assets/Buttons/Apple.png")) {
             std::cerr << "Error loading texture for apple." << std::endl;
         } else {
             isTextureLoaded = true;

@@ -16,8 +16,11 @@ Home::Home(sf::RenderWindow& window)
       loading(false),
       showSettings(false),
       isResumed{false}{
+    
+    // Get the current working directory
+    std::string currentDir = std::filesystem::current_path().string();
     // Load background texture
-    if (!backgroundTexture.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Backgrounds/MazeImageBackground.png")) {
+    if (!backgroundTexture.loadFromFile(currentDir + "/assets/Backgrounds/MazeImageBackground.png")) {
         std::cerr << "Error loading background image!" << std::endl;
         exit(-1);
     }
@@ -58,7 +61,10 @@ void Home::handleEvents(LevelManager& levelManager) {
             }
             if (resumeButton.isPressed(window)) {
                 std::cout << "Resume clicked\n";
-                std::string documentsPath = "/Users/mobinzaki/Documents/save.txt";
+                // Get the current working directory
+                std::string currentDir = std::filesystem::current_path().string();
+
+                std::string documentsPath = currentDir + "/save.txt";
                 // Check if save file exists
                 if (std::filesystem::exists(documentsPath)) {
                     loading = true;

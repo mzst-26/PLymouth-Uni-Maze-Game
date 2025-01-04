@@ -1,5 +1,5 @@
 #include "../include/game.h"
-
+#include <filesystem>
 Game::Game(sf::RenderWindow& window, std::string gameType)
     : window(window), gameType(gameType) // Initialize the window reference
 {
@@ -334,7 +334,10 @@ for (int i = 0; i < enemyAmount; ++i) {
         // Display the time remaining
             sf::Text timerText;
             sf::Font font;
-            if (font.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/fonts/font.ttf")) { // Replace with your font path
+            // Get the current working directory
+            std::string currentDir = std::filesystem::current_path().string();
+            // Load the font from the assets folder
+            if (font.loadFromFile(currentDir + "/assets/fonts/font.ttf")) { // Replace with your font path
                 timerText.setFont(font);
                 timerText.setCharacterSize(20);
                 //display the timer in the right format 00:00

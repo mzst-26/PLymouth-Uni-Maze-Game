@@ -1,6 +1,6 @@
 #include "../include/levelManager.h"
-#include <iostream>
 #include "../include/game.h"
+#include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -18,9 +18,11 @@ LevelManager::LevelManager()
       timeLimit(120){
 // Initialize maze dimensions
  adjustMazeDimensions();
+    // Get the current working directory
+    std::string currentDir = std::filesystem::current_path().string();
 
 // Example: Save file in the user's Documents folder
-    std::string documentsPath = "/Users/mobinzaki/Documents/save.txt";
+    std::string documentsPath = currentDir +  "/save.txt";
     saveFilePath = documentsPath;
     // Create the directory if it doesn't exist
     std::filesystem::create_directory(std::filesystem::path(documentsPath).parent_path());
@@ -63,7 +65,6 @@ void LevelManager::adjustMazeDimensions() {
         if (currentLevel <= 3) {
             amountOfenemy = 1;
             enemySpeed = 200;
-            stars = 1;
         } else {
             amountOfenemy = 2;
             enemySpeed = 170;
@@ -187,19 +188,19 @@ std::string LevelManager::getCurrentDiff()  {
 
 void LevelManager::calculateStars(int remainingTime) {
     // Calculate the total time available for the level
-    int totalTime = getTimerLimit();
+    int totalTime = 120;
 
     // Calculate the time taken by the player to complete the level
     int timeTaken = totalTime - remainingTime;
 
     // Calculate the percentage of time taken by the player
     float percentage = (static_cast<float>(timeTaken) / totalTime) * 100;
-
+    std::cout <<"persentage:" << percentage;
     // Assign stars based on the percentage
-    if (percentage <= 60) {
-        setGameStars(3); // 3 stars for completing within 60% of the total time
-    } else if (percentage <= 80) {
-        setGameStars(2); // 2 stars for completing within 80% of the total time
+    if (percentage <= 30) {
+        setGameStars(3); // 3 stars for completing within 40% of the total time
+    } else if (percentage <= 50) {
+        setGameStars(2); // 2 stars for completing within 50% of the total time
     } else {
         setGameStars(1); // 1 star for completing within the remaining time
     }

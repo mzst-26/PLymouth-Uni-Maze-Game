@@ -1,10 +1,10 @@
 #include "../include/player.h"
 #include "../include/maze.h"
-#include <iostream> 
 #include <SFML/Graphics.hpp>
-#include <map>
+#include <filesystem>
+#include <iostream> 
 #include <vector>
-
+#include <map>
 // Constructor: Initializes the player with a given cell size and starting position
 Player::Player(int cell_size, sf::Vector2i start_position)
     : position(start_position), cellSize(cell_size), currentFrame(0), animationTime(0.f), animationSpeed(0.2f), lastDirection("down") {
@@ -31,8 +31,11 @@ void Player::loadTextures() {
     for (const auto& dir : directions) {
         for (int i = 1; i <= 3; ++i) { // Assuming 3 frames per direction
             sf::Texture texture;
+            // Get the current working directory
+            std::string currentDir = std::filesystem::current_path().string();
+
             // Load the texture from file
-            if (texture.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Player/player_" + dir + std::to_string(i) + ".png")) {
+            if (texture.loadFromFile(currentDir + "/assets/Player/player_" + dir + std::to_string(i) + ".png")) {
                 textures[dir].push_back(texture);
             } else {
                 // Log an error if the texture fails to load

@@ -2,8 +2,14 @@
 #define POPUP_WINDOWS_H
 
 #include <SFML/Graphics.hpp>
-#include "levelManager.h"
 #include <string>
+#include "levelManager.h"
+#include "../include/button.h"
+#include "../include/game.h"
+#include "../include/levelManager.h"
+#include "../include/star.h"
+#include "../include/scoreBoard.h"
+
 
 // Function to create a popup window
 class WinOrLoose{

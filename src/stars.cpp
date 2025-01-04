@@ -1,9 +1,13 @@
 #include "../include/star.h"
 #include <iostream>
+#include <filesystem>
 // Constructor
 Star::Star(sf::Vector2f position, const std::string& text) {
+    // Get the current working directory
+    std::string currentDir = std::filesystem::current_path().string();
+
     // Load textures for idle and active states
-    std::string basePath = "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Buttons/";
+    std::string basePath = currentDir + "/assets/Buttons/";
     if (!texIdle.loadFromFile(basePath + text + ".png") ||
         !texActive.loadFromFile(basePath + text + "Active.png")) {
         std::cout << "Error loading star textures!";

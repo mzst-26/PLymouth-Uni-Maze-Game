@@ -3,7 +3,7 @@
 #include <cstdlib> // For std::rand() and std::srand()
 #include <ctime>   // For std::time()
 #include <iostream>
-
+#include <filesystem>
 Enemy::Enemy(int cell_size, sf::Vector2i start_position)
     : position(start_position) {
     // Seed the random number generator once
@@ -31,19 +31,22 @@ Enemy::Enemy(int cell_size, sf::Vector2i start_position)
 }
 
 void Enemy::loadTextures() {
+    // Get the current working directory
+    std::string currentDir = std::filesystem::current_path().string();
+
     // Define file paths for the 5 enemy textures
     std::vector<std::string> texturePaths = {
-        "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Enemy/Enemy1.png",
-        "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Enemy/Enemy2.png",
-        "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Enemy/Enemy3.png",
-        "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Enemy/Enemy4.png",
-        "/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/Enemy/Enemy5.png"
+        "/assets/Enemy/Enemy1.png",
+        "/assets/Enemy/Enemy2.png",
+        "/assets/Enemy/Enemy3.png",
+        "/assets/Enemy/Enemy4.png",
+        "/assets/Enemy/Enemy5.png"
     };
 
     // Load each texture
     for (const auto& path : texturePaths) {
         sf::Texture texture;
-        if (texture.loadFromFile(path)) {
+        if (texture.loadFromFile(currentDir + path)) {
             textures.push_back(texture);
         } else {
             std::cout << "Failed to load texture: " << path << "\n";

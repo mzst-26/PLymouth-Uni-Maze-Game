@@ -1,6 +1,8 @@
 #include "../include/settingsPopup.h"
 #include "../include/button.h"
+#include <filesystem>
 #include <iostream>
+
 
 SettingsPopup::SettingsPopup(sf::RenderWindow& window)
     : window(window),
@@ -9,8 +11,12 @@ SettingsPopup::SettingsPopup(sf::RenderWindow& window)
       hardButton(sf::Vector2f(600, 440), "Hard"),
       activeButtonIndex(0),
       currentDifficulty() {
+     
+     // Get the current working directory
+    std::string currentDir = std::filesystem::current_path().string();
+
      // Load font for title text
-    if (!titleFont.loadFromFile("/Users/mobinzaki/Documents/GitHub/PLymouth-Uni-Maze-Game/assets/fonts/font.ttf")) {
+    if (!titleFont.loadFromFile(currentDir + "/assets/fonts/font.ttf")) {
         std::cerr << "Error: Could not load font!" << std::endl;
     }
 
