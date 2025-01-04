@@ -22,15 +22,9 @@ This code is for a maze game where a player must navigate through a procedurally
 Below is a short preview of the gameplay:
 
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/EyUHsjDRWF0?autoplay=1&loop=1&mute=1&playlist=EyUHsjDRWF0" 
-    title="Maze Escape Gameplay Preview" 
-    frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-    allowfullscreen>
-</iframe>
 
-<video src="https://www.youtube.com/embed/EyUHsjDRWF0?autoplay=1&loop=1&mute=1&playlist=EyUHsjDRWF0" width="640" height="360" autoplay loop muted></video>
 
+https://github.com/user-attachments/assets/5cd0aee3-5260-488f-ae04-d1cd94358a9b
 
 # Maze Escape - Installation and Running Guide
 This is a university game project that can be set up and run on Windows or Mac using Visual Studio or VS Code. This guide provides detailed instructions for configuring the project and running it successfully.
