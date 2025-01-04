@@ -2,6 +2,35 @@
 This repository contains the maze game code for the 1000 coursework.
 I am using Mac VS code as VS is no longer available for Mac. I tried to put as much information as I can to make it easier to run this code.
 
+# Game Overview
+This code is for a maze game where a player must navigate through a procedurally generated maze to reach an exit door while avoiding enemies. The game features:
+
+- **Maze Generation**: A maze is generated with walls, a player starting position, an exit door, and enemy positions. some walls are randomly removed for easier navigation in the game and avoiding one path to the exit/player.
+- **Player Movement**: The player can move up, down, left, or right using keyboard input.
+- **Enemy AI**: Enemies move towards the player using a A* pathfinding algorithm.
+- **Apples**: Apples are scattered throughout the maze, and collecting them rewards the player.Apples also stop enemies for 8 seconds.
+- **Time Limit**: The player must complete the level within a time limit.
+- **Difficulty Levels**: The game has multiple difficulty levels, which affect the maze size, enemy speed, and time limit.
+- **Game Over**: The game ends if the player is caught by an enemy or the time limit expires.
+- **Level Completion**: The player completes a level by reaching the exit door, and their progress is saved and are reworded based on the time of completion and amount of apples eaten.
+- **Main Menu**: The game has a main menu with options to start a new game, resume a saved game, change difficulty or quit.
+
+---
+
+## Gameplay Preview
+
+Below is a short preview of the gameplay:
+
+<div align="center">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/EyUHsjDRWF0?autoplay=1&loop=1&mute=1&playlist=EyUHsjDRWF0" 
+          title="Maze Escape Gameplay Preview" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+  </iframe>
+</div>
+
+
 # Maze Escape - Installation and Running Guide
 This is a university game project that can be set up and run on Windows or Mac using Visual Studio or VS Code. This guide provides detailed instructions for configuring the project and running it successfully.
 
