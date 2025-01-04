@@ -61,7 +61,7 @@ void WinOrLoose::createWinOrLoosePopupWindow(const std::string& message, const s
     twoStar.setScale(sf::Vector2f(0.5f, 0.5f));
     threeStar.setScale(sf::Vector2f(0.4f, 0.4f));
 
-    ScoreBoard scoreBoard(popupPosition + sf::Vector2f(40, 140), "Board", levelManager.getUserScore());
+    ScoreBoard scoreBoard(popupPosition + sf::Vector2f(40, 140), "Board", std::to_string(levelManager.getUserScore()));
 
     // Font for text
     sf::Font font;

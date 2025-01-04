@@ -15,14 +15,13 @@ LevelManager::LevelManager()
       mazeWallRemovalAmount(8),
       userScore(0),
       stars(0),
-      timeLimit(2){
+      timeLimit(120){
 // Initialize maze dimensions
  adjustMazeDimensions();
 
- // Example: Save file in the user's Documents folder
+// Example: Save file in the user's Documents folder
     std::string documentsPath = "/Users/mobinzaki/Documents/save.txt";
     saveFilePath = documentsPath;
-
     // Create the directory if it doesn't exist
     std::filesystem::create_directory(std::filesystem::path(documentsPath).parent_path());
 
@@ -46,50 +45,74 @@ void LevelManager::loadLevel(int levelNumber) {
               << mazeWidth << "x" << mazeHeight << std::endl;
 }
 
+#include <algorithm> // For std::min and std::max
+
 void LevelManager::adjustMazeDimensions() {
-    // Adjust maze size based on difficulty and level
-    if (difficulty == "Easy" && currentLevel <=3 ) {
-        mazeWidth = 10 + currentLevel * 2;  // Easy: Small maze grows slowly
-        mazeHeight = 8 + currentLevel * 2;
-        amountOfenemy = 1;
-        mazeWallRemovalAmount = 8;
-        enemySpeed = 200;
-        stars = 1;
-        std::cout<<"Easy number 1";
-    }else if (difficulty == "Easy" && currentLevel > 3 ) {
-        amountOfenemy = 2;
-        enemySpeed = 170;
-        mazeWallRemovalAmount = 8;
-        mazeWidth = 10 + currentLevel * 2;  // Easy: Small maze grows slowly
-        mazeHeight = 8 + currentLevel * 2;
-        std::cout<<"Easy number 2";
-    } else if (difficulty == "Medium" && currentLevel <=3) {
-        amountOfenemy = 2;
-        enemySpeed = 160;
-        mazeWallRemovalAmount = 20;
-        mazeWidth = 15 + currentLevel * 3; // Medium: Moderate maze growth
-        mazeHeight = 10 + currentLevel * 3;
-    } else if (difficulty == "Medium" && currentLevel > 3) {
-        amountOfenemy = 3;
-        enemySpeed = 150;
-        mazeWallRemovalAmount = 25;
-        mazeWidth = 15 + currentLevel * 3; // Medium: Moderate maze growth
-        mazeHeight = 10 + currentLevel * 3;
-    } else if (difficulty == "Hard" && currentLevel <=3) {
-        amountOfenemy = 3;
-        enemySpeed = 150;
-        mazeWallRemovalAmount = 25;
-        mazeWidth = 20 + currentLevel * 5; // Hard: Larger maze, grows quickly
-        mazeHeight = 16 + currentLevel * 5;
-    }else if (difficulty == "Hard" && currentLevel > 3) {
-        amountOfenemy = 4;
-        enemySpeed = 140;
-        mazeWallRemovalAmount = 30;
-        mazeWidth = 20 + currentLevel * 5; // Hard: Larger maze, grows quickly
-        mazeHeight = 16 + currentLevel * 5;
+    // Default settings
+    int baseWidth = 10, baseHeight = 8;
+    int growthRateWidth = 2, growthRateHeight = 2;
+    int maxWallsToRemove = 60;
+
+    if (difficulty == "Easy") {
+        baseWidth = 10;
+        baseHeight = 8;
+        growthRateWidth = 2;
+        growthRateHeight = 2;
+        mazeWallRemovalAmount = std::min(8 + currentLevel * 2, maxWallsToRemove);
+
+        if (currentLevel <= 3) {
+            amountOfenemy = 1;
+            enemySpeed = 200;
+            stars = 1;
+        } else {
+            amountOfenemy = 2;
+            enemySpeed = 170;
+        }
+    } else if (difficulty == "Medium") {
+        baseWidth = 15;
+        baseHeight = 10;
+        growthRateWidth = 3;
+        growthRateHeight = 3;
+        mazeWallRemovalAmount = std::min(15 + currentLevel * 3, maxWallsToRemove);
+
+        if (currentLevel <= 3) {
+            amountOfenemy = 2;
+            enemySpeed = 160;
+        } else {
+            amountOfenemy = 3;
+            enemySpeed = 150;
+        }
+    } else if (difficulty == "Hard") {
+        baseWidth = 20;
+        baseHeight = 16;
+        growthRateWidth = 5;
+        growthRateHeight = 5;
+        mazeWallRemovalAmount = std::min(25 + currentLevel * 5, maxWallsToRemove);
+
+        if (currentLevel <= 3) {
+            amountOfenemy = 3;
+            enemySpeed = 150;
+        } else {
+            amountOfenemy = 4;
+            enemySpeed = 140;
+        }
     } else {
         std::cout << "Invalid difficulty level. Using default settings." << std::endl;
+        return;
     }
+
+    // Calculate and clamp maze dimensions
+    mazeWidth = std::min(baseWidth + currentLevel * growthRateWidth, 30);
+    mazeHeight = std::min(baseHeight + currentLevel * growthRateHeight, 25);
+
+    // // Debug output
+    // std::cout << "Level: " << currentLevel
+    //           << " Difficulty: " << difficulty
+    //           << " Maze Size: " << mazeWidth << "x" << mazeHeight
+    //           << " Enemies: " << amountOfenemy
+    //           << " Speed: " << enemySpeed
+    //           << " Walls Removed: " << mazeWallRemovalAmount
+    //           << " Stars: " << stars << std::endl;
 }
 
 void LevelManager::resetLevelState() {
@@ -118,26 +141,32 @@ int LevelManager::getMazeWallRemovalAmount() const
      return mazeWallRemovalAmount;
 }
 
-std::string LevelManager::getUserScore() const
+int LevelManager::getUserScore() const
 {
-    return std::to_string(userScore);
+    return userScore;
+}
+void LevelManager::setUserScore(int addToUserScore) 
+{
+    userScore += addToUserScore;
+
 }
 int LevelManager::getGameStars() const
 {
      return stars;
 }
+void LevelManager::setGameStars(int amountOfStars) 
+{
+    stars = amountOfStars;
+}
 int LevelManager::getTimerLimit() const
 {
+     std::cout << timeLimit << "\n";
      return timeLimit;
 }
-void LevelManager::update()
+double LevelManager::setTimerLimit(double RemainingTime)
 {
-    // Update level-specific logic here
-}
-
-void LevelManager::render(sf::RenderWindow& window) {
-    // Render the current level here
-    // Draw maze, player, enemy, and other level elements
+    std::cout << timeLimit << "\n"<< RemainingTime << "\n";
+     timeLimit = RemainingTime;
 }
 
 int LevelManager::getMazeWidth() const
@@ -152,10 +181,43 @@ int LevelManager::getMazeHeight() const {
 int LevelManager::getCurrentLevel() const {
     return currentLevel;
 }
+std::string LevelManager::getCurrentDiff()  {
+    return difficulty;
+}
 
-void LevelManager::saveGameState(const sf::Vector2i& playerPos, const sf::Vector2i& exitPosition, const std::vector<sf::Vector2i>& enemyPositions, const std::vector<sf::Vector2i>& applesPositions, int remainingTime) {
+void LevelManager::calculateStars(int remainingTime) {
+    // Calculate the total time available for the level
+    int totalTime = getTimerLimit();
+
+    // Calculate the time taken by the player to complete the level
+    int timeTaken = totalTime - remainingTime;
+
+    // Calculate the percentage of time taken by the player
+    float percentage = (static_cast<float>(timeTaken) / totalTime) * 100;
+
+    // Assign stars based on the percentage
+    if (percentage <= 60) {
+        setGameStars(3); // 3 stars for completing within 60% of the total time
+    } else if (percentage <= 80) {
+        setGameStars(2); // 2 stars for completing within 80% of the total time
+    } else {
+        setGameStars(1); // 1 star for completing within the remaining time
+    }
+
+    std::cout << "Stars awarded: " << getGameStars() << std::endl;
+}
+
+void LevelManager::saveGameState(const sf::Vector2i& playerPos, const sf::Vector2i& exitPosition, 
+                                 const std::vector<sf::Vector2i>& enemyPositions, 
+                                 const std::vector<sf::Vector2i>& applesPositions, 
+                                 int remainingTime, int userScore, sf::Vector2i& mazeStartPos) {
     std::ofstream saveFile(saveFilePath);
     if (saveFile.is_open()) {
+        // Save level and maze dimensions
+        saveFile << "CurrentLevel:" << currentLevel << "\n";
+        saveFile << "MazeWidth:" << mazeWidth << "\n";
+        saveFile << "MazeHeight:" << mazeHeight << "\n";
+
         // Save player position
         saveFile << "PlayerPosition:" << playerPos.x << "," << playerPos.y << "\n";
 
@@ -178,71 +240,94 @@ void LevelManager::saveGameState(const sf::Vector2i& playerPos, const sf::Vector
         }
         saveFile << "\n";
 
-        // Save remaining time
+        // Save remaining time and total rewards
         saveFile << "RemainingTime:" << remainingTime << "\n";
+        saveFile << "userScore:" << userScore << "\n";
+         
+         // Save maze starting position
+        saveFile << "MazeStartPos:" << mazeStartPos.x << "," << mazeStartPos.y << "\n";
 
         saveFile.close();
         isGameSaved = true;
-         std::cerr << "saved game state to file.\n";
+        std::cout << "Game state saved successfully.\n";
     } else {
         std::cerr << "Error: Unable to save game state to file.\n";
     }
 }
-void LevelManager::loadGameState(sf::Vector2i& playerPos,sf::Vector2i& exitPosition, std::vector<sf::Vector2i>& enemyPositions, std::vector<sf::Vector2i>& applesPositions, int& remainingTime) {
+
+
+void LevelManager::loadGameState(sf::Vector2i& playerPos, sf::Vector2i& exitPosition,
+                                 std::vector<sf::Vector2i>& enemyPositions,
+                                 std::vector<sf::Vector2i>& applesPositions,
+                                 int& remainingTime, int& userScore, sf::Vector2i& mazeStartPos) {
     std::ifstream saveFile(saveFilePath);
     if (saveFile.is_open()) {
         std::string line;
         while (std::getline(saveFile, line)) {
+            std::cout << "Parsing line: " << line << std::endl;
+
             std::istringstream iss(line);
-            std::string key;
-            if (std::getline(iss, key, ':')) {
-                if (key == "PlayerPosition") {
-                    std::string value;
-                    std::getline(iss, value);
-                    size_t commaPos = value.find(',');
-                    playerPos.x = std::stoi(value.substr(0, commaPos));
-                    playerPos.y = std::stoi(value.substr(commaPos + 1));
-                }else if (key == "Exit") {
-                    std::string value;
-                    std::getline(iss, value);
-                    size_t commaPos = value.find(',');
-                    exitPosition.x = std::stoi(value.substr(0, commaPos));
-                    exitPosition.y = std::stoi(value.substr(commaPos + 1));
-                }
-                 else if (key == "EnemyPositions") {
-                    std::string value;
-                    std::getline(iss, value);
-                    std::istringstream enemyStream(value);
-                    std::string enemyPos;
-                    while (std::getline(enemyStream, enemyPos, '|')) {
-                        size_t commaPos = enemyPos.find(',');
-                        sf::Vector2i enemy;
-                        enemy.x = std::stoi(enemyPos.substr(0, commaPos));
-                        enemy.y = std::stoi(enemyPos.substr(commaPos + 1));
-                        enemyPositions.push_back(enemy);
+            std::string key, value;
+            if (std::getline(iss, key, ':') && std::getline(iss, value)) {
+                try {
+                    if (key == "CurrentLevel") {
+                        currentLevel = std::stoi(value);
+                    } else if (key == "MazeWidth") {
+                        mazeWidth = std::stoi(value);
+                    } else if (key == "MazeHeight") {
+                        mazeHeight = std::stoi(value);
+                    } else if (key == "PlayerPosition") {
+                        auto commaPos = value.find(',');
+                        if (commaPos == std::string::npos) throw std::invalid_argument("Missing comma");
+                        playerPos.x = std::stoi(value.substr(0, commaPos));
+                        playerPos.y = std::stoi(value.substr(commaPos + 1));
+                    } else if (key == "Exit") {
+                        auto commaPos = value.find(',');
+                        if (commaPos == std::string::npos) throw std::invalid_argument("Missing comma");
+                        exitPosition.x = std::stoi(value.substr(0, commaPos));
+                        exitPosition.y = std::stoi(value.substr(commaPos + 1));
+                    } else if (key == "EnemyPositions") {
+                        enemyPositions.clear();
+                        std::istringstream enemyStream(value);
+                        std::string enemyPos;
+                        while (std::getline(enemyStream, enemyPos, '|')) {
+                            auto commaPos = enemyPos.find(',');
+                            if (commaPos == std::string::npos) throw std::invalid_argument("Missing comma in enemy position");
+                            enemyPositions.emplace_back(std::stoi(enemyPos.substr(0, commaPos)),
+                                                        std::stoi(enemyPos.substr(commaPos + 1)));
+                        }
+                    } else if (key == "ApplesPositions") {
+                        applesPositions.clear();
+                        std::istringstream appleStream(value);
+                        std::string applePos;
+                        while (std::getline(appleStream, applePos, '|')) {
+                            auto commaPos = applePos.find(',');
+                            if (commaPos == std::string::npos) throw std::invalid_argument("Missing comma in apple position");
+                            applesPositions.emplace_back(std::stoi(applePos.substr(0, commaPos)),
+                                                         std::stoi(applePos.substr(commaPos + 1)));
+                        }
+                    } else if (key == "RemainingTime") {
+                        remainingTime = std::stoi(value);
+                    } else if (key == "userScore") {
+                        userScore = std::stoi(value);
+                    } else if (key == "MazeStartPos") {
+                        auto commaPos = value.find(',');
+                        if (commaPos == std::string::npos) throw std::invalid_argument("Missing comma in maze start position");
+                        mazeStartPos.x = std::stoi(value.substr(0, commaPos));
+                        mazeStartPos.y = std::stoi(value.substr(commaPos + 1));
                     }
-                } else if (key == "ApplesPositions") {
-                    std::string value;
-                    std::getline(iss, value);
-                    std::istringstream appleStream(value);
-                    std::string applePos;
-                    while (std::getline(appleStream, applePos, '|')) {
-                        size_t commaPos = applePos.find(',');
-                        sf::Vector2i apple;
-                        apple.x = std::stoi(applePos.substr(0, commaPos));
-                        apple.y = std::stoi(applePos.substr(commaPos + 1));
-                        applesPositions.push_back(apple);
-                    }
-                } else if (key == "RemainingTime") {
-                    std::string value;
-                    std::getline(iss, value);
-                    remainingTime = std::stoi(value);
+                } catch (const std::exception& e) {
+                    std::cerr << "Error parsing key: " << key << ", value: " << value << ". Exception: " << e.what() << std::endl;
                 }
+            } else {
+                std::cerr << "Error: Malformed line: " << line << std::endl;
             }
         }
         saveFile.close();
         isGameSaved = true;
+        std::cout << "Game state loaded successfully.\n";
     } else {
         std::cerr << "Error: Unable to load game state from file.\n";
     }
 }
+

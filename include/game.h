@@ -15,8 +15,7 @@
 class Game {
 public:
     Game(sf::RenderWindow& window, std::string gameType); // Constructor to initialize the game with a window
-    void run(LevelManager& levelManager, int timeLimitMinutes); // Method to start the game loop
-    
+    void run(LevelManager& levelManager, double timeLimitMinutes); // Method to start the game loop
 
 private:
     std::string gameType; // Type of game (new game or resume)
@@ -24,7 +23,7 @@ private:
     bool isPositionOccupied(const sf::Vector2i& pos, const std::vector<sf::Vector2i>& occupiedPositions);
 
     // Initialize positions and game variables
-    int remainingTime;
+    int remainingTime; // Class member for remaining time
     sf::Vector2i playerPos;
     sf::Vector2i exitPos;
     std::vector<sf::Vector2i> enemyPositions;
@@ -32,6 +31,8 @@ private:
     std::vector<sf::Vector2i> occupiedPositions;
     std::vector<Enemy> enemies; // Vector to hold multiple enemies
     std::vector<Apples> apples;  // Vector to hold multiple apples
+    int userScore;
+    sf::Vector2i mazeStartPos;
 };
 
 #endif // GAME_H

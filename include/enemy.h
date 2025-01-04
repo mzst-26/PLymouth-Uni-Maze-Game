@@ -24,6 +24,8 @@ public:
     // Resume enemy movement
     void resume();
 
+    bool is_stoped();
+
 private:
     sf::Vector2i position;             // Current position
     sf::Sprite sprite;                 // Enemy sprite

@@ -12,67 +12,86 @@ bool Game::isPositionOccupied(const sf::Vector2i& pos, const std::vector<sf::Vec
 }
 
 
-void Game::run(LevelManager& levelManager, int timeLimitMinutes){
+void Game::run(LevelManager& levelManager, double TimeLimitInSeconds){
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
+    // Load the game state if the game is resumed
+    if (gameType == "Resumed") {
+        //load the data from the file
+        levelManager.loadGameState(playerPos, exitPos, enemyPositions, applesPositions, remainingTime, userScore, mazeStartPos);
+        levelManager.setTimerLimit(remainingTime);
+        std::cout << "Game state loaded successfully!" << std::endl;
 
-    //initialise the Maze width and height
+    }
+
+    // Retrieve the mazeWidth and mazeHeight values from the LevelManager class
     int mazeWidth = levelManager.getMazeWidth();
     int mazeHeight = levelManager.getMazeHeight();
     int enemySpeed = levelManager.getEnemySpeed();
     int enemyAmount = levelManager.getEnemyGenerateAmount();
-    
-      // Load the game state if the game is resumed
-    if (gameType == "Resumed") {
-        levelManager.loadGameState(playerPos, exitPos, enemyPositions, applesPositions, remainingTime);
-        std::cout << "Game state loaded successfully!" << std::endl;
-    } else {
+    int userScore = levelManager.getUserScore();
+    int currentLevel = levelManager.getCurrentLevel();
+
+    if (gameType != "Resumed") {
         // Generate or load player position
         do {
             playerPos = sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight);
         } while (isPositionOccupied(playerPos, occupiedPositions));
-        occupiedPositions.push_back(playerPos); // Mark player position as occupied
+            occupiedPositions.push_back(playerPos); // Mark player position as occupied
 
        do {
             exitPos = sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight);
         } while (isPositionOccupied(exitPos, occupiedPositions));
             occupiedPositions.push_back(exitPos); // Mark exit position as occupied
 
-        remainingTime = timeLimitMinutes * 60; // Convert minutes to seconds
+            sf::Vector2i mazeStartPos(rand() % mazeWidth, rand() % mazeHeight); // Default starting position
     }
 
-
-
+    
     SettingsPopup settingsPopup(window);    // Create an instance of SettingsPopup
-    Maze maze(mazeWidth, mazeHeight, 30, 0, 0);  // Create a Maze object
+    Maze maze(mazeWidth, mazeHeight, 30, mazeStartPos.x, mazeStartPos.y);  // Create a Maze object
     Player player(30, playerPos); // Create Player object
     EscapeDoor escapeDoor(30, exitPos); //create Escape Door object
     WinOrLoose winOrLoose;
     Modules Module;
     Button HomeButton(sf::Vector2f(1110, 50), "Home");//create Home Page button
 
-    playerPos = player.GetPlayerPosition();
+   
     // Get player and exit positions
+    playerPos = player.GetPlayerPosition();
     sf::Vector2i goal = player.GetPlayerPosition();
     sf::Vector2i exit = escapeDoor.GetEscapeDoorPosition();
-  
     
-    // Create multiple enemies
-    for (int i = 0; i < enemyAmount; ++i) {
-        sf::Vector2i randomPosition;
-        if (gameType == "Resumed" && i < enemyPositions.size()) {
-            randomPosition = enemyPositions[i]; // Use loaded positions for resumed game
+   // Create multiple enemies
+for (int i = 0; i < enemyAmount; ++i) {
+    sf::Vector2i randomPosition;
+
+    if (gameType == "Resumed") {
+        if (i < enemyPositions.size()) {
+            // Use previously saved positions for resumed game
+            randomPosition = enemyPositions[i];
         } else {
-        sf::Vector2i enemyPos;
-        do {
-            enemyPos = sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight);
-         } while (isPositionOccupied(enemyPos, occupiedPositions));
-            enemyPositions.push_back(enemyPos); // Add enemy position to the list
-            occupiedPositions.push_back(enemyPos); // Mark enemy position as occupied
-            
-            randomPosition = sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight); // Random positions for new game
+            // Handle case where there are more enemies than saved positions
+            // For extra enemies, we need to generate new random positions
+            do {
+                randomPosition = sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight);
+            } while (isPositionOccupied(randomPosition, occupiedPositions));
+            enemyPositions.push_back(randomPosition); // Save this position for potential future resumption
+            occupiedPositions.push_back(randomPosition); // Mark position as occupied
         }
-        enemies.emplace_back(30, randomPosition); // Create and add an enemy to the vector
+    } else {
+        // Handle the creation of enemies for a new game
+        do {
+            randomPosition = sf::Vector2i(rand() % mazeWidth, rand() % mazeHeight);
+        } while (isPositionOccupied(randomPosition, occupiedPositions));
+        
+        enemyPositions.push_back(randomPosition); // Save position for future resumption
+        occupiedPositions.push_back(randomPosition); // Mark as occupied
     }
+
+    // Create and add the enemy to the vector
+    enemies.emplace_back(30, randomPosition); // Assuming 30 is the enemy size or health, adjust as needed
+}
+
 
     
     // Vector to hold multiple Apples items
@@ -103,7 +122,6 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
 
     //timer for the game
     sf::Clock gameClock; // Clock to track the elapsed time
-    int timeLimitSeconds = timeLimitMinutes * 60; // convert min to sec
 
     sf::Clock PlayerAnimationCoolDown;
     // Enemy pause timer
@@ -115,8 +133,9 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
     while (window.isOpen()) {
         //calculate the remaining time
         int elapsedTime = gameClock.getElapsedTime().asSeconds(); // Time since the game started
-        remainingTime = timeLimitSeconds - elapsedTime;       // Time left
+        remainingTime = levelManager.getTimerLimit() - elapsedTime;       // Time left
 
+        
         //when time ends, player looses
         if (remainingTime <= 0) {
             std::cout << "Time's up! Player loses.\n";
@@ -143,7 +162,7 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
                 }
 
                 // Save the game state
-                levelManager.saveGameState(playerPos, exitPos, enemyPositions, applesPositions, remainingTime);
+                levelManager.saveGameState(playerPos, exitPos , enemyPositions, applesPositions,  remainingTime, levelManager.getUserScore(), mazeStartPos);
                 window.close();
                 return;
             }
@@ -179,7 +198,8 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
                     }
                     // std::cout<<"Home button pressed";
                     // Save the game state
-                    levelManager.saveGameState(playerPos, exitPos , enemyPositions, applesPositions, remainingTime);
+                    levelManager.saveGameState(playerPos, exitPos , enemyPositions, applesPositions,  remainingTime, levelManager.getUserScore(), mazeStartPos);
+                    levelManager.setTimerLimit(remainingTime);
                     Home mainMenu(window);  // Create a new instance of the main menu
                     mainMenu.run(levelManager); // Run the main menu
                     window.close(); //close the old one
@@ -197,6 +217,9 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
         for (size_t i = 0; i < enemies.size(); ++i) {
             if (enemies[i].GetEnemyPosition() == goal) {
                 std::cout << "Enemy " << i << " found the Player!" << std::endl;
+                levelManager.setUserScore(-10);
+                levelManager.setTimerLimit(120);
+                levelManager.saveGameState(playerPos, exitPos , enemyPositions, applesPositions,  remainingTime, levelManager.getUserScore(), mazeStartPos);
                 winOrLoose.showGameOverPopup(levelManager, window);
                 return;
         }
@@ -209,6 +232,8 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
                  if (enemies[i].GetEnemyPosition()!= goal) {
                     enemies[i].stop();
                     timer.start(8);
+                    levelManager.setUserScore(5);
+                    levelManager.setTimerLimit(remainingTime + 10);
                     // std::cout << "Enemy " << i << " STOPED!" << std::endl;
                     
                  }
@@ -228,6 +253,11 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
             sf::sleep(sf::milliseconds(100)); // Short pause to allow rendering
             // Update maze
             maze.update();
+            levelManager.setUserScore(10);
+            std::cout << "user Score is: "<< levelManager.getUserScore();
+            levelManager.calculateStars(remainingTime);
+            levelManager.setTimerLimit(120);
+            levelManager.saveGameState(playerPos, exitPos , enemyPositions, applesPositions,  remainingTime, levelManager.getUserScore(), mazeStartPos);
             winOrLoose.showLuckyDayPopup(levelManager, window); // Show the "Lucky Day" popup
             return; // Exit the game loop and end the game
         }
@@ -235,18 +265,18 @@ void Game::run(LevelManager& levelManager, int timeLimitMinutes){
         // Update maze
         maze.update();
 
-        // Recalculate the path if needed
        if (pathNeedsUpdate) {
-            for (size_t i = 0; i < enemies.size(); ++i) {
-                paths[i].clear();
-                if (AStar::findPath(maze, enemies[i].GetEnemyPosition(), goal, paths[i], levelManager)) {
-                    std::cout << "Path for Enemy " << i << " found.\n";
-                } else {
-                    std::cout << "No path for Enemy " << i << ".\n";
-                }
+        for (size_t i = 0; i < enemies.size(); ++i) {
+            paths[i].clear();
+            if (AStar::findPath(maze, enemies[i].GetEnemyPosition(), goal, paths[i], levelManager)) {
+                // std::cout << "Path for Enemy " << i << " found.\n";
+            } else {
+                // std::cout << "No path for Enemy " << i << ".\n";
             }
-            pathNeedsUpdate = false;
         }
+        pathNeedsUpdate = false;
+    }
+
 
           // Move each enemy
         if (maze.getIsGenerated()){

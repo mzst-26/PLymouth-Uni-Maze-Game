@@ -69,9 +69,13 @@ void Enemy::setPosition(sf::Vector2i new_position) {
 }
 
 void Enemy::stop() {
-    stopped = true; // Stop enemy movement
+    this->stopped = true; // Stop enemy movement
 }
 
 void Enemy::resume() {
-    stopped = false; // Resume enemy movement
+    this->stopped = false; // Resume enemy movement
+}
+
+bool Enemy::is_stoped() {
+    return stopped; // Resume enemy movement
 }

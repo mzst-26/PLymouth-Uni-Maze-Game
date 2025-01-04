@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "../include/home.h"
+#include <filesystem>
+#include <fstream>
+#include <sstream>
 
 Home::Home(sf::RenderWindow& window)
     :window(window),
@@ -51,13 +54,20 @@ void Home::handleEvents(LevelManager& levelManager) {
                 loading = true;
                 loadingClock.restart();
                 isResumed = false;
+                levelManager.setTimerLimit(120);
             }
             if (resumeButton.isPressed(window)) {
                 std::cout << "Resume clicked\n";
-                loading = true;
-                loadingClock.restart();
-                isResumed = true;
-
+                std::string documentsPath = "/Users/mobinzaki/Documents/save.txt";
+                // Check if save file exists
+                if (std::filesystem::exists(documentsPath)) {
+                    loading = true;
+                    loadingClock.restart();
+                    isResumed = true;
+                } else {
+                    std::cerr << "Save file not found.\n";
+                }
+                
             }
             if (settingsButton.isPressed(window)) {
                 showSettings = !showSettings;
