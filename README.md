@@ -21,15 +21,7 @@ This code is for a maze game where a player must navigate through a procedurally
 
 Below is a short preview of the gameplay:
 
-
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/EyUHsjDRWF0?autoplay=1&loop=1&mute=1&playlist=EyUHsjDRWF0" 
-          title="Maze Escape Gameplay Preview" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-  </iframe>
-
-
+<video src="https://www.youtube.com/embed/EyUHsjDRWF0?autoplay=1&loop=1&mute=1&playlist=EyUHsjDRWF0" width="640" height="360" autoplay loop muted></video>
 
 
 # Maze Escape - Installation and Running Guide
