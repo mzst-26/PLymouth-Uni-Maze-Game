@@ -19,7 +19,7 @@ This is a university game project that can be set up and run on Windows or Mac u
 
 ### Using Visual Studio on Windows
 
-1. ### Install SFML ###:
+1. ### Install SFML :
    - Download the [SFML SDK for Windows](https://www.sfml-dev.org/download.php).
    - Extract the zip file to a directory, e.g., `C:\SFML`.
    - Add `C:\SFML\bin` to your system's PATH:
