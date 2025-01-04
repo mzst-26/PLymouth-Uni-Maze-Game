@@ -26,7 +26,7 @@ Below is a short preview of the gameplay:
 
 https://github.com/user-attachments/assets/5cd0aee3-5260-488f-ae04-d1cd94358a9b
 
-# Maze Escape - Installation and Running Guide
+# Maze Game - Installation and Running Guide
 This is a university game project that can be set up and run on Windows or Mac using Visual Studio or VS Code. This guide provides detailed instructions for configuring the project and running it successfully.
 
 ## Table of Contents
