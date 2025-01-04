@@ -258,9 +258,10 @@ This is a university game project that can be set up and run on Windows or Mac u
                 }
             ]
         }
-        ```
+        
+    ```
 
-    **All of this configuration files would be in .vscode directory.**
+    - All of this configuration files would be in .vscode directory.
 
 
 5. **Build and Run**:
