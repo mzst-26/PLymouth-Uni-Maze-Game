@@ -19,7 +19,7 @@ This is a university game project that can be set up and run on Windows or Mac u
 
 ### Using Visual Studio on Windows
 
-1. **Install SFML**:
+1. ### Install SFML ###:
    - Download the [SFML SDK for Windows](https://www.sfml-dev.org/download.php).
    - Extract the zip file to a directory, e.g., `C:\SFML`.
    - Add `C:\SFML\bin` to your system's PATH:
@@ -192,7 +192,6 @@ This is a university game project that can be set up and run on Windows or Mac u
                         "src/scoreBoard.cpp",
                         "src/modules.cpp",
                         "src/apples.cpp",
-                        "src/puzzle.cpp",
                         "-o",
                         "build/MysteryMaze"
                     ],
@@ -260,7 +259,8 @@ This is a university game project that can be set up and run on Windows or Mac u
             ]
         }
         ```
-        all of this configuration files would be in .vscode directory.
+
+    **All of this configuration files would be in .vscode directory.**
 
 
 5. **Build and Run**:
