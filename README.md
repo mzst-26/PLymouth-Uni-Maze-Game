@@ -158,8 +158,20 @@ This is a university game project that can be set up and run on Windows or Mac u
      git clone https://github.com/mzst-26/PLymouth-Uni-Maze-Game
      cd PLymouth-Uni-Maze-Game
      ```
+     
+  OR
+
+**Download it manually from SFML website**:
+   Then follow the instructions on this video:
+    
+
+
+https://github.com/user-attachments/assets/024b85ba-60b6-4045-8002-2279e6d3ddaa
+
+
 
 4. **Configure Build Tasks**:
+
    - Edit `tasks.json` as follows:
      ```json
      {
@@ -247,8 +259,8 @@ This is a university game project that can be set up and run on Windows or Mac u
             "browse": {
                 "path": [
                 "${workspaceFolder}",
-                "/opt/homebrew/include",
-                "/opt/homebrew/include/SFML"
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include/SFML"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },
@@ -288,7 +300,7 @@ This is a university game project that can be set up and run on Windows or Mac u
     - All of this configuration files would be in .vscode directory.
 
 
-5. **Build and Run**:
+6. **Build and Run**:
    - Open `main.cpp`, then press `Ctrl+Shift+B` to build.
    - Run the executable from the terminal:
      ```bash
