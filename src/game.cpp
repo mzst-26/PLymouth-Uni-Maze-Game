@@ -234,11 +234,11 @@ for (int i = 0; i < enemyAmount; ++i) {
                     timer.start(8);
                     levelManager.setUserScore(5);
                     levelManager.setTimerLimit(remainingTime + 10);
-                    // std::cout << "Enemy " << i << " STOPED!" << std::endl;
+                    std::cout << "Enemy " << i << " STOPED!" << std::endl;
                     
                  }
              }
-                // std::cout << "Player found an apple!" << std::endl;
+                std::cout << "Player found an apple!" << std::endl;
                 apples.erase(apples.begin() + i); // Remove the found apple from the list
                 break;
             }
@@ -265,20 +265,21 @@ for (int i = 0; i < enemyAmount; ++i) {
         // Update maze
         maze.update();
 
+    //update path
        if (pathNeedsUpdate) {
         for (size_t i = 0; i < enemies.size(); ++i) {
             paths[i].clear();
             if (AStar::findPath(maze, enemies[i].GetEnemyPosition(), goal, paths[i], levelManager)) {
-                // std::cout << "Path for Enemy " << i << " found.\n";
+                std::cout << "Path for Enemy " << i << " found.\n";
             } else {
-                // std::cout << "No path for Enemy " << i << ".\n";
+                std::cout << "No path for Enemy " << i << ".\n";
             }
         }
         pathNeedsUpdate = false;
     }
 
 
-          // Move each enemy
+        // Move each enemy
         if (maze.getIsGenerated()){
             for (size_t i = 0; i < enemies.size(); ++i) {
                 if (enemyClocks[i].getElapsedTime().asMilliseconds() >= EnemyMoveCooldown) {

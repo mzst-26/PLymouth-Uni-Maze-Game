@@ -46,7 +46,7 @@ optional<sf::Vector2i> Maze::choose_next_cell() {
     return nullopt;
 }
 const std::vector<std::vector<Maze::Cell>>& Maze::getMazeGrid() const {
-    return maze_grid; // Assuming 'mazeGrid' is the member storing the grid
+    return maze_grid; 
 }
 
 bool Maze::allCellsVisited() {

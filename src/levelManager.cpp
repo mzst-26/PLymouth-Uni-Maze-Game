@@ -80,7 +80,7 @@ void LevelManager::adjustMazeDimensions() {
             amountOfenemy = 2;
             enemySpeed = 160;
         } else {
-            amountOfenemy = 3;
+            amountOfenemy = 4;
             enemySpeed = 150;
         }
     } else if (difficulty == "Hard") {
@@ -94,7 +94,7 @@ void LevelManager::adjustMazeDimensions() {
             amountOfenemy = 3;
             enemySpeed = 150;
         } else {
-            amountOfenemy = 4;
+            amountOfenemy = 5;
             enemySpeed = 140;
         }
     } else {
@@ -161,12 +161,12 @@ void LevelManager::setGameStars(int amountOfStars)
 }
 int LevelManager::getTimerLimit() const
 {
-     std::cout << timeLimit << "\n";
+    //  std::cout << timeLimit << "\n";
      return timeLimit;
 }
 double LevelManager::setTimerLimit(double RemainingTime)
 {
-    std::cout << timeLimit << "\n"<< RemainingTime << "\n";
+    // std::cout << timeLimit << "\n"<< RemainingTime << "\n";
      timeLimit = RemainingTime;
 }
 
